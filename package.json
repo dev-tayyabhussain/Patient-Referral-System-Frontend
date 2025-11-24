@@ -1,9 +1,9 @@
 {
-  "name": "medinet-frontend",
+  "name": "patient-referral-system-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "MediNet Frontend - Doctor Referral & Health Record System",
+  "description": "Patient Referral System Frontend - Doctor Referral & Health Record System",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -22,15 +22,15 @@
     "vite",
     "mui"
   ],
-  "author": "MediNet Team",
+  "author": "Patient Referral System Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/medinet-frontend.git"
+    "url": "https://github.com/dev-tayyabhussain/Patient-Referral-System-Frontend.git"
   },
-  "homepage": "https://github.com/your-username/medinet-frontend#readme",
+  "homepage": "https://github.com/dev-tayyabhussain/Patient-Referral-System-Frontend#readme",
   "bugs": {
-    "url": "https://github.com/your-username/medinet-frontend/issues"
+    "url": "https://github.com/dev-tayyabhussain/Patient-Referral-System-Frontend/issues"
   },
   "engines": {
     "node": ">=18.0.0",

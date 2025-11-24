@@ -1,4 +1,4 @@
-# MediNet Frontend
+# Patient Referral System Frontend
 
 A comprehensive healthcare management platform frontend built with React, TypeScript, and Material-UI. This application provides role-based access control for doctors, hospital administrators, patients, and super administrators with a complete approval workflow system.
 
@@ -43,8 +43,8 @@ A comprehensive healthcare management platform frontend built with React, TypeSc
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/DaniyalAlam09/medinet-frontend.git
-   cd medinet-frontend
+   git clone https://github.com/dev-tayyabhussain/Patient-Referral-System-Frontend.git
+   cd patient-referral-system-frontend
    ```
 
 2. **Install dependencies**
@@ -63,7 +63,7 @@ A comprehensive healthcare management platform frontend built with React, TypeSc
 
    ```
    VITE_API_URL=http://localhost:5000/api
-   VITE_APP_NAME=MediNet
+   VITE_APP_NAME=Patient Referral System
    ```
 
 4. **Start development server**
@@ -208,13 +208,9 @@ npm run build -- --analyze
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🆘 Support
 
-For support, email support@medinet.com or create an issue in the repository.
+For support, email support@patientreferralsystem.com or create an issue in the repository.
 
 ## 🔄 Version History
 
@@ -224,4 +220,4 @@ For support, email support@medinet.com or create an issue in the repository.
 
 ---
 
-**MediNet Frontend** - Connecting healthcare professionals and patients through technology.
+**Patient Referral System Frontend** - Connecting healthcare professionals and patients through technology.

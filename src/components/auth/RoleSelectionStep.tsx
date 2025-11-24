@@ -41,7 +41,7 @@ const roles = [
     {
         value: 'hospital',
         label: 'Hospital',
-        description: 'Register your hospital to join the MediNet network',
+        description: 'Register your hospital to join the Patient Referral System network',
         icon: <BusinessIcon sx={{ fontSize: 40, color: '#339164' }} />,
         color: '#339164',
     },

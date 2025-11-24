@@ -74,7 +74,7 @@ const Navbar: React.FC = () => {
         <Box sx={{ width: 280 }}>
             <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Typography variant="h6" color="primary.main" fontWeight="bold">
-                    MediNet
+                    Patient Referral System
                 </Typography>
                 <IconButton onClick={handleDrawerToggle}>
                     <CloseIcon />
