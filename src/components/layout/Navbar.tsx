@@ -164,7 +164,7 @@ const Navbar: React.FC = () => {
                         }}
                         onClick={() => navigate('/')}
                     >
-                        MediNet
+                        Patient Referral System
                     </Typography>
 
                     {/* Desktop Navigation */}
