@@ -100,7 +100,7 @@ const AboutPage: React.FC = () => {
         {
             year: '2020',
             title: 'Company Founded',
-            description: 'MediNet was founded with a vision to transform healthcare through technology.',
+            description: 'Patient Referral System was founded with a vision to transform healthcare through technology.',
         },
         {
             year: '2021',
@@ -153,7 +153,7 @@ const AboutPage: React.FC = () => {
                             mb: 3,
                         }}
                     >
-                        About MediNet
+                        About Patient Referral Systems
                     </Typography>
                     <Typography
                         variant="h5"
@@ -289,7 +289,7 @@ const AboutPage: React.FC = () => {
                         Our Team
                     </Typography>
                     <Typography variant="h6" color="text.secondary">
-                        Meet the experts behind MediNet's success
+                        Meet the experts behind Patient Referral System's success
                     </Typography>
                 </Box>
 

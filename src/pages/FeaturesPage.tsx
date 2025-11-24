@@ -328,10 +328,10 @@ const FeaturesPage: React.FC = () => {
                 <Grid container spacing={8} alignItems="center">
                     <Grid item xs={12} md={6}>
                         <Typography variant="h2" component="h2" gutterBottom sx={{ mb: 4 }}>
-                            Why Choose MediNet?
+                            Why Choose Patient Referral System?
                         </Typography>
                         <Typography variant="h6" color="text.secondary" sx={{ mb: 4, lineHeight: 1.7 }}>
-                            Join thousands of healthcare professionals who trust MediNet to streamline their operations and improve patient care.
+                            Join thousands of healthcare professionals who trust Patient Referral System to streamline their operations and improve patient care.
                         </Typography>
 
                         <List>
@@ -402,7 +402,7 @@ const FeaturesPage: React.FC = () => {
                         Ready to Experience These Features?
                     </Typography>
                     <Typography variant="h6" sx={{ mb: 6, opacity: 0.9, lineHeight: 1.7 }}>
-                        Start your free trial today and discover how MediNet can transform your healthcare operations.
+                        Start your free trial today and discover how Patient Referral System can transform your healthcare operations.
                     </Typography>
                     <Stack
                         direction={{ xs: 'column', sm: 'row' }}

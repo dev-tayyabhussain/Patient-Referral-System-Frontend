@@ -44,7 +44,7 @@ const ContactPage: React.FC = () => {
         {
             icon: <EmailIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
             title: 'Email Us',
-            details: ['support@medinet.com', 'sales@medinet.com', 'partnerships@medinet.com'],
+            details: ['support@patientreferralsystem.com', 'sales@patientreferralsystem.com', 'partnerships@patientreferralsystem.com'],
             description: 'Send us an email and we\'ll respond within 24 hours',
         },
         {
@@ -72,21 +72,21 @@ const ContactPage: React.FC = () => {
             icon: <SupportIcon sx={{ fontSize: 32, color: 'primary.main' }} />,
             title: 'Technical Support',
             description: 'Get help with technical issues and system troubleshooting',
-            contact: 'support@medinet.com',
+            contact: 'support@patientreferralsystem.com',
             responseTime: 'Within 2 hours',
         },
         {
             icon: <BusinessIcon sx={{ fontSize: 32, color: 'secondary.main' }} />,
             title: 'Sales & Partnerships',
             description: 'Learn about our solutions and partnership opportunities',
-            contact: 'sales@medinet.com',
+            contact: 'sales@patientreferralsystem.com',
             responseTime: 'Within 4 hours',
         },
         {
             icon: <EmailIcon sx={{ fontSize: 32, color: 'success.main' }} />,
             title: 'General Inquiries',
             description: 'Questions about our services and general information',
-            contact: 'info@medinet.com',
+            contact: 'info@patientreferralsystem.com',
             responseTime: 'Within 24 hours',
         },
     ];

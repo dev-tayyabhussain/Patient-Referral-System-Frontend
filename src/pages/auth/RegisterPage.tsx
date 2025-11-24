@@ -238,7 +238,7 @@ const RegisterPage: React.FC = () => {
                             Create Account
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            Join MediNet and start managing healthcare better
+                            Join Patient Referral System and start managing healthcare better
                         </Typography>
                     </Box>
 

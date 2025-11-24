@@ -84,7 +84,7 @@ const LoginPage: React.FC = () => {
                             Sign In
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            Welcome back to MediNet
+                            Welcome back to Patient Referral System
                         </Typography>
                     </Box>
 
