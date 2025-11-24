@@ -98,7 +98,7 @@ const HomePage: React.FC = () => {
             name: 'Dr. Sarah Johnson',
             role: 'Chief Medical Officer',
             hospital: 'City General Hospital',
-            content: 'MediNet has revolutionized our referral process. The efficiency gains are remarkable.',
+            content: 'Patient Referral System has revolutionized our referral process. The efficiency gains are remarkable.',
             rating: 5,
         },
         {
@@ -181,7 +181,7 @@ const HomePage: React.FC = () => {
                             Transform Healthcare
                             <br />
                             <Box component="span" sx={{ color: 'secondary.main' }}>
-                                with MediNet
+                                with Patient Referral System
                             </Box>
                         </Typography>
 
@@ -356,10 +356,10 @@ const HomePage: React.FC = () => {
                     <Grid container spacing={8} alignItems="center">
                         <Grid item xs={12} md={6}>
                             <Typography variant="h2" component="h2" gutterBottom sx={{ mb: 4 }}>
-                                Why Choose MediNet?
+                                Why Choose Patient Referral System?
                             </Typography>
                             <Typography variant="h6" color="text.secondary" sx={{ mb: 4, lineHeight: 1.7 }}>
-                                Join thousands of healthcare professionals who trust MediNet to streamline their operations and improve patient care.
+                                Join thousands of healthcare professionals who trust Patient Referral System to streamline their operations and improve patient care.
                             </Typography>
 
                             <Stack spacing={2}>
@@ -474,7 +474,7 @@ const HomePage: React.FC = () => {
                         Ready to Transform Healthcare?
                     </Typography>
                     <Typography variant="h6" sx={{ mb: 6, opacity: 0.9, lineHeight: 1.7 }}>
-                        Join thousands of healthcare professionals using MediNet to streamline their operations and improve patient care.
+                        Join thousands of healthcare professionals using Patient Referral System to streamline their operations and improve patient care.
                     </Typography>
                     <Stack
                         direction={{ xs: 'column', sm: 'row' }}

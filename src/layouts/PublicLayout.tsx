@@ -29,13 +29,13 @@ const PublicLayout: React.FC = () => {
                 <Container maxWidth="lg">
                     <Box sx={{ textAlign: 'center' }}>
                         <Typography variant="h6" color="primary.main" gutterBottom sx={{ fontWeight: 700 }}>
-                            MediNet
+                            Patient Referral System
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                             The National Healthcare Referral & Health Record Management System
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            © 2024 MediNet. All rights reserved. Built with ❤️ for better healthcare.
+                            © 2024 Patient Referral System. All rights reserved. Built with ❤️ for better healthcare.
                         </Typography>
                     </Box>
                 </Container>
