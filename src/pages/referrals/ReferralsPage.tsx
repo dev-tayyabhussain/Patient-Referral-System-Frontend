@@ -48,9 +48,11 @@ import {
     Edit,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
-import { referralApi } from '../../utils/approvalApi';
+import { referralApi, hospitalApi, patientApi, doctorApi } from '../../utils/approvalApi';
 import { useAuth } from '../../hooks/useAuth';
 import { formatDateTime } from '../../components/dashboard/DataTable';
+import ReferralForm from '../../components/forms/ReferralForm';
+import { Hospital } from '../../types/hospital';
 
 const ReferralsPage: React.FC = () => {
     const { user } = useAuth();
@@ -63,6 +65,31 @@ const ReferralsPage: React.FC = () => {
     const [selectedReferral, setSelectedReferral] = useState<string | null>(null);
     const [openDialog, setOpenDialog] = useState(false);
     const [viewingReferral, setViewingReferral] = useState<any>(null);
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [createLoading, setCreateLoading] = useState(false);
+    const [hospitals, setHospitals] = useState<Hospital[]>([]);
+    const [patients, setPatients] = useState<any[]>([]);
+    const [receivingDoctors, setReceivingDoctors] = useState<any[]>([]);
+    const [referringDoctors, setReferringDoctors] = useState<any[]>([]);
+    const [loadingHospitals, setLoadingHospitals] = useState(false);
+    const [loadingPatients, setLoadingPatients] = useState(false);
+    const [loadingReceivingDoctors, setLoadingReceivingDoctors] = useState(false);
+    const [loadingReferringDoctors, setLoadingReferringDoctors] = useState(false);
+    const [formData, setFormData] = useState<any>({
+        patientId: '',
+        receivingHospitalId: '',
+        receivingDoctorId: '',
+        referringDoctorId: '',
+        reason: '',
+        priority: 'medium',
+        specialty: '',
+        chiefComplaint: '',
+        historyOfPresentIllness: '',
+        physicalExamination: '',
+        diagnosis: '',
+        treatmentPlan: '',
+        notes: ''
+    });
 
     // Filters
     const [filters, setFilters] = useState({
@@ -116,6 +143,70 @@ const ReferralsPage: React.FC = () => {
         }
     };
 
+    // Load hospitals, patients, and doctors for form (only for hospital role)
+    useEffect(() => {
+        if (user?.role !== 'hospital') return;
+        
+        const loadData = async () => {
+            try {
+                setLoadingHospitals(true);
+                setLoadingPatients(true);
+                setLoadingReferringDoctors(true);
+
+                const [hospitalsRes, patientsRes, referringDoctorsRes] = await Promise.all([
+                    hospitalApi.getApprovedHospitals(),
+                    patientApi.getPatients({ hospitalId: user?.hospitalId, limit: 100 }),
+                    doctorApi.getDoctors({ hospitalId: user?.hospitalId, limit: 100 })
+                ]);
+
+                setHospitals(hospitalsRes.data);
+                setPatients(patientsRes.data?.patients || []);
+                setReferringDoctors(referringDoctorsRes.data?.doctors || []);
+            } catch (error) {
+                console.error('Error loading form data:', error);
+            } finally {
+                setLoadingHospitals(false);
+                setLoadingPatients(false);
+                setLoadingReferringDoctors(false);
+            }
+        };
+        loadData();
+    }, [user?.hospitalId, user?.role]);
+
+    // Fetch receiving doctors whenever receiving hospital changes
+    useEffect(() => {
+        const selectedHospitalId = formData.receivingHospitalId;
+        if (!selectedHospitalId) {
+            setReceivingDoctors([]);
+            return;
+        }
+
+        let isMounted = true;
+        const fetchReceivingDoctors = async () => {
+            setLoadingReceivingDoctors(true);
+            try {
+                const response = await doctorApi.getDoctors({ hospitalId: selectedHospitalId, limit: 100 });
+                if (isMounted) {
+                    setReceivingDoctors(response.data?.doctors || []);
+                }
+            } catch (error) {
+                console.error('Failed to load receiving doctors:', error);
+                if (isMounted) {
+                    setReceivingDoctors([]);
+                }
+            } finally {
+                if (isMounted) {
+                    setLoadingReceivingDoctors(false);
+                }
+            }
+        };
+
+        fetchReceivingDoctors();
+        return () => {
+            isMounted = false;
+        };
+    }, [formData.receivingHospitalId]);
+
     // Initial fetch
     useEffect(() => {
         fetchReferrals(1);
@@ -159,6 +250,64 @@ const ReferralsPage: React.FC = () => {
             toast.error('Failed to fetch referral details');
         }
         handleMenuClose();
+    };
+
+    const handleCreateReferral = async () => {
+        if (!formData.patientId || !formData.receivingHospitalId || !formData.reason || !formData.specialty || !formData.chiefComplaint) {
+            toast.error('Please fill in all required fields');
+            return;
+        }
+
+        setCreateLoading(true);
+        try {
+            await referralApi.createReferral(formData);
+            toast.success('Referral created successfully');
+            setCreateDialogOpen(false);
+            setFormData({
+                patientId: '',
+                receivingHospitalId: '',
+                receivingDoctorId: '',
+                referringDoctorId: '',
+                reason: '',
+                priority: 'medium',
+                specialty: '',
+                chiefComplaint: '',
+                historyOfPresentIllness: '',
+                physicalExamination: '',
+                diagnosis: '',
+                treatmentPlan: '',
+                notes: ''
+            });
+            fetchReferrals(
+                pagination.current,
+                filters.status !== 'all' ? filters.status : undefined,
+                filters.priority !== 'all' ? filters.priority : undefined,
+                searchTerm || undefined
+            );
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || 'Failed to create referral');
+        } finally {
+            setCreateLoading(false);
+        }
+    };
+
+    const handleOpenCreateDialog = () => {
+        setFormData({
+            patientId: '',
+            receivingHospitalId: '',
+            receivingDoctorId: '',
+            referringDoctorId: '',
+            reason: '',
+            priority: 'medium',
+            specialty: '',
+            chiefComplaint: '',
+            historyOfPresentIllness: '',
+            physicalExamination: '',
+            diagnosis: '',
+            treatmentPlan: '',
+            notes: ''
+        });
+        setCreateDialogOpen(true);
     };
 
     const getStatusColor = (status: string) => {
@@ -210,6 +359,15 @@ const ReferralsPage: React.FC = () => {
                     </Typography>
                 </Box>
                 <Box display="flex" gap={2}>
+                    {user?.role === 'hospital' && (
+                        <Button
+                            variant="contained"
+                            startIcon={<Add />}
+                            onClick={handleOpenCreateDialog}
+                        >
+                            Create Referral
+                        </Button>
+                    )}
                     <FormControl size="small" sx={{ minWidth: 120 }}>
                         <InputLabel>Status</InputLabel>
                         <Select
@@ -577,6 +735,42 @@ const ReferralsPage: React.FC = () => {
                     <Button onClick={() => setOpenDialog(false)}>Close</Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Create Referral Dialog */}
+            {user?.role === 'hospital' && (
+                <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)} maxWidth="md" fullWidth>
+                    <DialogTitle>Create New Referral</DialogTitle>
+                    <DialogContent>
+                        <Box sx={{ pt: 2 }}>
+                            <ReferralForm
+                                formData={formData}
+                                setFormData={setFormData}
+                                hospitals={hospitals}
+                                patients={patients}
+                                receivingDoctors={receivingDoctors}
+                                referringDoctors={referringDoctors}
+                                loadingHospitals={loadingHospitals}
+                                loadingPatients={loadingPatients}
+                                loadingReceivingDoctors={loadingReceivingDoctors}
+                                loadingReferringDoctors={loadingReferringDoctors}
+                            />
+                        </Box>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setCreateDialogOpen(false)} disabled={createLoading}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={handleCreateReferral}
+                            disabled={createLoading}
+                            startIcon={createLoading ? <CircularProgress size={20} /> : <Add />}
+                        >
+                            {createLoading ? 'Creating...' : 'Create Referral'}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            )}
         </Box>
     );
 };

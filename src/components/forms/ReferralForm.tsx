@@ -17,10 +17,12 @@ interface ReferralFormProps {
     setFormData: (data: any) => void;
     hospitals: Hospital[];
     patients: any[];
-    doctors: any[];
+    receivingDoctors: any[];
+    referringDoctors: any[];
     loadingHospitals?: boolean;
     loadingPatients?: boolean;
-    loadingDoctors?: boolean;
+    loadingReceivingDoctors?: boolean;
+    loadingReferringDoctors?: boolean;
 }
 
 const ReferralForm: React.FC<ReferralFormProps> = ({
@@ -28,10 +30,12 @@ const ReferralForm: React.FC<ReferralFormProps> = ({
     setFormData,
     hospitals,
     patients,
-    doctors,
+    receivingDoctors,
+    referringDoctors,
     loadingHospitals = false,
     loadingPatients = false,
-    loadingDoctors = false,
+    loadingReceivingDoctors = false,
+    loadingReferringDoctors = false,
 }) => {
     return (
         <Grid container spacing={2}>
@@ -71,7 +75,7 @@ const ReferralForm: React.FC<ReferralFormProps> = ({
                     getOptionLabel={(option) => `${option.name} - ${option.address.city}, ${option.address.state}`}
                     loading={loadingHospitals}
                     value={hospitals.find(h => h._id === formData.receivingHospitalId) || null}
-                    onChange={(_, value) => setFormData({ ...formData, receivingHospitalId: value?._id || '' })}
+                    onChange={(_, value) => setFormData({ ...formData, receivingHospitalId: value?._id || '', receivingDoctorId: '' })}
                     renderInput={(params) => (
                         <TextField
                             {...params}
@@ -92,10 +96,10 @@ const ReferralForm: React.FC<ReferralFormProps> = ({
             </Grid>
             <Grid item xs={12} sm={6}>
                 <Autocomplete
-                    options={doctors}
+                    options={receivingDoctors}
                     getOptionLabel={(option) => `Dr. ${option.firstName} ${option.lastName} - ${option.specialization || 'N/A'}`}
-                    loading={loadingDoctors}
-                    value={doctors.find(d => d._id === formData.receivingDoctorId) || null}
+                    loading={loadingReceivingDoctors}
+                    value={receivingDoctors.find(d => d._id === formData.receivingDoctorId) || null}
                     onChange={(_, value) => setFormData({ ...formData, receivingDoctorId: value?._id || '' })}
                     renderInput={(params) => (
                         <TextField
@@ -105,7 +109,7 @@ const ReferralForm: React.FC<ReferralFormProps> = ({
                                 ...params.InputProps,
                                 endAdornment: (
                                     <>
-                                        {loadingDoctors ? <CircularProgress size={20} /> : null}
+                                        {loadingReceivingDoctors ? <CircularProgress size={20} /> : null}
                                         {params.InputProps.endAdornment}
                                     </>
                                 ),
@@ -116,10 +120,10 @@ const ReferralForm: React.FC<ReferralFormProps> = ({
             </Grid>
             <Grid item xs={12} sm={6}>
                 <Autocomplete
-                    options={doctors}
+                    options={referringDoctors}
                     getOptionLabel={(option) => `Dr. ${option.firstName} ${option.lastName} - ${option.specialization || 'N/A'}`}
-                    loading={loadingDoctors}
-                    value={doctors.find(d => d._id === formData.referringDoctorId) || null}
+                    loading={loadingReferringDoctors}
+                    value={referringDoctors.find(d => d._id === formData.referringDoctorId) || null}
                     onChange={(_, value) => setFormData({ ...formData, referringDoctorId: value?._id || '' })}
                     renderInput={(params) => (
                         <TextField
@@ -130,7 +134,7 @@ const ReferralForm: React.FC<ReferralFormProps> = ({
                                 ...params.InputProps,
                                 endAdornment: (
                                     <>
-                                        {loadingDoctors ? <CircularProgress size={20} /> : null}
+                                        {loadingReferringDoctors ? <CircularProgress size={20} /> : null}
                                         {params.InputProps.endAdornment}
                                     </>
                                 ),
