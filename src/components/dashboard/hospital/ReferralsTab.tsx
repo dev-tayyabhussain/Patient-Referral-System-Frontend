@@ -58,10 +58,12 @@ const ReferralsTab: React.FC<ReferralsTabProps> = ({ hospitalId }) => {
     const [createLoading, setCreateLoading] = useState(false);
     const [hospitals, setHospitals] = useState<Hospital[]>([]);
     const [patients, setPatients] = useState<any[]>([]);
-    const [doctors, setDoctors] = useState<any[]>([]);
+    const [receivingDoctors, setReceivingDoctors] = useState<any[]>([]);
+    const [referringDoctors, setReferringDoctors] = useState<any[]>([]);
     const [loadingHospitals, setLoadingHospitals] = useState(false);
     const [loadingPatients, setLoadingPatients] = useState(false);
-    const [loadingDoctors, setLoadingDoctors] = useState(false);
+    const [loadingReceivingDoctors, setLoadingReceivingDoctors] = useState(false);
+    const [loadingReferringDoctors, setLoadingReferringDoctors] = useState(false);
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [selectedReferralId, setSelectedReferralId] = useState<string | null>(null);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -128,9 +130,9 @@ const ReferralsTab: React.FC<ReferralsTabProps> = ({ hospitalId }) => {
             try {
                 setLoadingHospitals(true);
                 setLoadingPatients(true);
-                setLoadingDoctors(true);
+                setLoadingReferringDoctors(true);
 
-                const [hospitalsRes, patientsRes, doctorsRes] = await Promise.all([
+                const [hospitalsRes, patientsRes, referringDoctorsRes] = await Promise.all([
                     hospitalApi.getApprovedHospitals(),
                     patientApi.getPatients({ hospitalId: hospitalId || user?.hospitalId, limit: 100 }),
                     doctorApi.getDoctors({ hospitalId: hospitalId || user?.hospitalId, limit: 100 })
@@ -138,17 +140,51 @@ const ReferralsTab: React.FC<ReferralsTabProps> = ({ hospitalId }) => {
 
                 setHospitals(hospitalsRes.data);
                 setPatients(patientsRes.data?.patients || []);
-                setDoctors(doctorsRes.data?.doctors || []);
+                setReferringDoctors(referringDoctorsRes.data?.doctors || []);
             } catch (error) {
                 console.error('Error loading form data:', error);
             } finally {
                 setLoadingHospitals(false);
                 setLoadingPatients(false);
-                setLoadingDoctors(false);
+                setLoadingReferringDoctors(false);
             }
         };
         loadData();
     }, [hospitalId, user?.hospitalId]);
+
+    // Fetch receiving doctors whenever receiving hospital changes
+    useEffect(() => {
+        const selectedHospitalId = formData.receivingHospitalId;
+        if (!selectedHospitalId) {
+            setReceivingDoctors([]);
+            return;
+        }
+
+        let isMounted = true;
+        const fetchReceivingDoctors = async () => {
+            setLoadingReceivingDoctors(true);
+            try {
+                const response = await doctorApi.getDoctors({ hospitalId: selectedHospitalId, limit: 100 });
+                if (isMounted) {
+                    setReceivingDoctors(response.data?.doctors || []);
+                }
+            } catch (error) {
+                console.error('Failed to load receiving doctors:', error);
+                if (isMounted) {
+                    setReceivingDoctors([]);
+                }
+            } finally {
+                if (isMounted) {
+                    setLoadingReceivingDoctors(false);
+                }
+            }
+        };
+
+        fetchReceivingDoctors();
+        return () => {
+            isMounted = false;
+        };
+    }, [formData.receivingHospitalId]);
 
     // Initial fetch
     useEffect(() => {
@@ -222,9 +258,23 @@ const ReferralsTab: React.FC<ReferralsTabProps> = ({ hospitalId }) => {
     };
 
     const handleEditReferral = (referral: any) => {
+        // Close view dialog if open
+        setViewDialogOpen(false);
+        setSelectedReferralId(null);
+        
         setEditingReferral(referral);
         setIsEditMode(true);
         // Populate form with referral data
+        // Handle diagnosis - it might be an object {primary, secondary} or a string
+        let diagnosisValue = '';
+        if (referral.diagnosis) {
+            if (typeof referral.diagnosis === 'object' && referral.diagnosis.primary !== undefined) {
+                diagnosisValue = referral.diagnosis.primary || '';
+            } else if (typeof referral.diagnosis === 'string') {
+                diagnosisValue = referral.diagnosis;
+            }
+        }
+        
         setFormData({
             patientId: referral.patient?._id || referral.patient || '',
             receivingHospitalId: referral.receivingHospital?._id || referral.receivingHospital || '',
@@ -236,7 +286,7 @@ const ReferralsTab: React.FC<ReferralsTabProps> = ({ hospitalId }) => {
             chiefComplaint: referral.chiefComplaint || '',
             historyOfPresentIllness: referral.historyOfPresentIllness || '',
             physicalExamination: referral.physicalExamination || '',
-            diagnosis: referral.diagnosis || '',
+            diagnosis: diagnosisValue,
             treatmentPlan: referral.treatmentPlan || '',
             notes: referral.notes || ''
         });
@@ -475,10 +525,12 @@ const ReferralsTab: React.FC<ReferralsTabProps> = ({ hospitalId }) => {
                             setFormData={setFormData}
                             hospitals={hospitals}
                             patients={patients}
-                            doctors={doctors}
+                            receivingDoctors={receivingDoctors}
+                            referringDoctors={referringDoctors}
                             loadingHospitals={loadingHospitals}
                             loadingPatients={loadingPatients}
-                            loadingDoctors={loadingDoctors}
+                            loadingReceivingDoctors={loadingReceivingDoctors}
+                            loadingReferringDoctors={loadingReferringDoctors}
                         />
                     </Box>
                 </DialogContent>

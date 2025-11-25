@@ -182,7 +182,22 @@ const ViewReferralDialog: React.FC<ViewReferralDialogProps> = ({ open, onClose, 
                             {referral.diagnosis && (
                                 <Grid item xs={12}>
                                     <Typography variant="subtitle2" color="text.secondary">Diagnosis</Typography>
-                                    <Typography variant="body1">{referral.diagnosis}</Typography>
+                                    <Typography variant="body1">
+                                        {typeof referral.diagnosis === 'object' 
+                                            ? (referral.diagnosis.primary || 'N/A')
+                                            : (referral.diagnosis || 'N/A')
+                                        }
+                                    </Typography>
+                                    {typeof referral.diagnosis === 'object' && 
+                                     referral.diagnosis.secondary && 
+                                     referral.diagnosis.secondary.length > 0 && (
+                                        <Box sx={{ mt: 1 }}>
+                                            <Typography variant="caption" color="text.secondary">Secondary:</Typography>
+                                            <Typography variant="body2">
+                                                {referral.diagnosis.secondary.join(', ')}
+                                            </Typography>
+                                        </Box>
+                                    )}
                                 </Grid>
                             )}
                             {referral.treatmentPlan && (
