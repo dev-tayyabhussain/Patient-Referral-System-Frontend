@@ -48,24 +48,24 @@ const DoctorSidebar: React.FC<DoctorSidebarProps> = ({ open, onClose, variant = 
             icon: <PeopleIcon />,
             description: 'Patient management',
         },
-        {
-            title: 'Appointments',
-            path: '/dashboard/appointments',
-            icon: <ScheduleIcon />,
-            description: 'Schedule & manage',
-        },
+        // {
+        //     title: 'Appointments',
+        //     path: '/dashboard/appointments',
+        //     icon: <ScheduleIcon />,
+        //     description: 'Schedule & manage',
+        // },
         {
             title: 'Referrals',
             path: '/dashboard/referrals',
             icon: <AssignmentIcon />,
             description: 'Create & track referrals',
         },
-        {
-            title: 'Reports',
-            path: '/dashboard/reports',
-            icon: <DescriptionIcon />,
-            description: 'Medical reports',
-        },
+        // {
+        //     title: 'Reports',
+        //     path: '/dashboard/reports',
+        //     icon: <DescriptionIcon />,
+        //     description: 'Medical reports',
+        // },
         {
             title: 'Profile',
             path: '/dashboard/profile',

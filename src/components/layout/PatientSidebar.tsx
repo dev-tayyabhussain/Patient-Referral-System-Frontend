@@ -42,18 +42,18 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({ open, onClose, variant 
             icon: <DashboardIcon />,
             description: 'My health overview',
         },
-        {
-            title: 'Appointments',
-            path: '/dashboard/appointments',
-            icon: <ScheduleIcon />,
-            description: 'Book & manage appointments',
-        },
-        {
-            title: 'Book Appointment',
-            path: '/dashboard/book-appointment',
-            icon: <BookIcon />,
-            description: 'Schedule new appointment',
-        },
+        // {
+        //     title: 'Appointments',
+        //     path: '/dashboard/appointments',
+        //     icon: <ScheduleIcon />,
+        //     description: 'Book & manage appointments',
+        // },
+        // {
+        //     title: 'Book Appointment',
+        //     path: '/dashboard/book-appointment',
+        //     icon: <BookIcon />,
+        //     description: 'Schedule new appointment',
+        // },
         {
             title: 'Medical Records',
             path: '/dashboard/records',
@@ -66,20 +66,12 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({ open, onClose, variant 
             icon: <AssignmentIcon />,
             description: 'Track referrals',
         },
-
         {
-            title: 'My Doctors',
-            path: '/dashboard/doctors',
-            icon: <PersonIcon />,
-            description: 'My healthcare team',
-        },
-        {
-            title: 'Hospitals',
-            path: '/dashboard/hospitals',
+            title: 'My Doctors & Hospitals',
+            path: '/dashboard/my-doctors-hospitals',
             icon: <HospitalIcon />,
-            description: 'Find hospitals',
+            description: 'My healthcare providers',
         },
-
         {
             title: 'Profile',
             path: '/dashboard/profile',

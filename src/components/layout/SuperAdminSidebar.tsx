@@ -79,12 +79,12 @@ const SuperAdminSidebar: React.FC<SuperAdminSidebarProps> = ({ open, onClose, va
             icon: <AssignmentIcon />,
             description: 'Referral management',
         },
-        {
-            title: 'Reports',
-            path: '/dashboard/reports',
-            icon: <ReportIcon />,
-            description: 'Generate reports',
-        },
+        // {
+        //     title: 'Reports',
+        //     path: '/dashboard/reports',
+        //     icon: <ReportIcon />,
+        //     description: 'Generate reports',
+        // },
         {
             title: 'Profile',
             path: '/dashboard/profile',
