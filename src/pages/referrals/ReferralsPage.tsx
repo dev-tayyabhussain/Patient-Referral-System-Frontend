@@ -146,7 +146,7 @@ const ReferralsPage: React.FC = () => {
     // Load hospitals, patients, and doctors for form (only for hospital role)
     useEffect(() => {
         if (user?.role !== 'hospital') return;
-        
+
         const loadData = async () => {
             try {
                 setLoadingHospitals(true);
@@ -718,7 +718,19 @@ const ReferralsPage: React.FC = () => {
                                 {viewingReferral.diagnosis && (
                                     <Grid item xs={12}>
                                         <Typography variant="subtitle2" color="text.secondary">Diagnosis</Typography>
-                                        <Typography variant="body1">{viewingReferral.diagnosis}</Typography>
+                                        <Typography variant="body1">
+                                            {typeof viewingReferral.diagnosis === 'object'
+                                                ? viewingReferral.diagnosis.primary || 'N/A'
+                                                : viewingReferral.diagnosis}
+                                        </Typography>
+                                        {typeof viewingReferral.diagnosis === 'object' && viewingReferral.diagnosis.secondary && viewingReferral.diagnosis.secondary.length > 0 && (
+                                            <Box sx={{ mt: 1 }}>
+                                                <Typography variant="body2" color="text.secondary">Secondary:</Typography>
+                                                {viewingReferral.diagnosis.secondary.map((diag: string, index: number) => (
+                                                    <Chip key={index} label={diag} size="small" sx={{ mr: 0.5, mt: 0.5 }} />
+                                                ))}
+                                            </Box>
+                                        )}
                                     </Grid>
                                 )}
                                 {viewingReferral.notes && (
