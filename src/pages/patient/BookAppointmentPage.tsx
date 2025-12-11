@@ -63,7 +63,7 @@ const BookAppointmentPage: React.FC = () => {
             hospital: 'City General Hospital',
             rating: 4.8,
             experience: 8,
-            nextAvailable: '2024-01-20',
+            nextAvailable: '2025-01-20',
             avatar: 'SJ',
         },
         {
@@ -73,7 +73,7 @@ const BookAppointmentPage: React.FC = () => {
             hospital: 'City General Hospital',
             rating: 4.9,
             experience: 12,
-            nextAvailable: '2024-01-22',
+            nextAvailable: '2025-01-22',
             avatar: 'MC',
         },
         {
@@ -83,7 +83,7 @@ const BookAppointmentPage: React.FC = () => {
             hospital: 'City General Hospital',
             rating: 4.7,
             experience: 6,
-            nextAvailable: '2024-01-18',
+            nextAvailable: '2025-01-18',
             avatar: 'ER',
         },
     ];

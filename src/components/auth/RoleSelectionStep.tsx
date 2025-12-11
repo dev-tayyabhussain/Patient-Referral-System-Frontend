@@ -45,13 +45,13 @@ const roles = [
         icon: <BusinessIcon sx={{ fontSize: 40, color: '#339164' }} />,
         color: '#339164',
     },
-    {
-        value: 'super_admin',
-        label: 'Super Admin',
-        description: 'System administration and user management',
-        icon: <AdminIcon sx={{ fontSize: 40, color: '#1988C8' }} />,
-        color: '#1988C8',
-    },
+    // {
+    //     value: 'super_admin',
+    //     label: 'Super Admin',
+    //     description: 'System administration and user management',
+    //     icon: <AdminIcon sx={{ fontSize: 40, color: '#1988C8' }} />,
+    //     color: '#1988C8',
+    // },
 ];
 
 const RoleSelectionStep: React.FC<RoleSelectionStepProps> = ({

@@ -3,19 +3,10 @@ import {
     Box,
     Container,
     Typography,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
     Alert,
     CircularProgress,
-    Button,
-    Chip,
 } from '@mui/material';
 import {
-    Add as AddIcon,
-    Edit as EditIcon,
-    Visibility as ViewIcon,
     People as PeopleIcon,
     Assignment as AssignmentIcon,
     Schedule as ScheduleIcon,
@@ -25,63 +16,19 @@ import { useAuth } from '../../hooks/useAuth';
 import { useDashboardData } from '../../hooks/useDashboardData';
 import {
     StatsGrid,
-    DataTable,
-    ActivityFeed,
     DashboardTabs,
-    TableColumn,
-    TableAction
 } from '../../components/dashboard';
-import { formatStatus, formatAvatar, formatDateTime } from '../../components/dashboard/DataTable';
+import { PatientsTab, ReferralsTab, AppointmentsTab, AnalyticsTab } from '../../components/dashboard/doctor';
 
 const DoctorDashboard: React.FC = () => {
     const { user } = useAuth();
     const { data, loading, error } = useDashboardData('doctor');
     const [tabValue, setTabValue] = useState(0);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [dialogType, setDialogType] = useState<'patient' | 'referral' | 'appointment'>('patient');
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     };
 
-    const handleOpenDialog = (type: 'patient' | 'referral' | 'appointment') => {
-        setDialogType(type);
-        setOpenDialog(true);
-    };
-
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
-
-    const handleViewPatient = (patient: any) => {
-        console.log('View patient:', patient);
-        // Implement view patient logic
-    };
-
-    const handleEditPatient = (patient: any) => {
-        console.log('Edit patient:', patient);
-        // Implement edit patient logic
-    };
-
-    const handleViewAppointment = (appointment: any) => {
-        console.log('View appointment:', appointment);
-        // Implement view appointment logic
-    };
-
-    const handleEditAppointment = (appointment: any) => {
-        console.log('Edit appointment:', appointment);
-        // Implement edit appointment logic
-    };
-
-    const handleViewReferral = (referral: any) => {
-        console.log('View referral:', referral);
-        // Implement view referral logic
-    };
-
-    const handleEditReferral = (referral: any) => {
-        console.log('Edit referral:', referral);
-        // Implement edit referral logic
-    };
 
     if (loading) {
         return (
@@ -121,7 +68,7 @@ const DoctorDashboard: React.FC = () => {
         {
             title: 'My Patients',
             value: data.stats?.totalPatients || 0,
-            subtitle: `${data.patients?.filter((p: any) => p.status === 'Active').length || 0} active`,
+            subtitle: `${data.stats?.activeReferrals || 0} active referrals`,
             icon: <PeopleIcon />,
             color: 'primary' as const,
             trend: {
@@ -133,7 +80,7 @@ const DoctorDashboard: React.FC = () => {
         {
             title: 'Today\'s Appointments',
             value: data.stats?.todayAppointments || 0,
-            subtitle: `${data.appointments?.filter((a: any) => a.status === 'Scheduled').length || 0} scheduled`,
+            subtitle: 'Scheduled appointments',
             icon: <ScheduleIcon />,
             color: 'primary' as const
         },
@@ -162,257 +109,23 @@ const DoctorDashboard: React.FC = () => {
         }
     ];
 
-    // Prepare patient table columns
-    const patientColumns: TableColumn[] = [
-        {
-            id: 'name',
-            label: 'Patient',
-            minWidth: 200,
-            format: (_value, row) => formatAvatar(`${row.firstName} ${row.lastName}`, row.profileImage)
-        },
-        {
-            id: 'age',
-            label: 'Age/Gender',
-            minWidth: 120,
-            format: (value, row) => `${value} / ${row.gender}`
-        },
-        {
-            id: 'condition',
-            label: 'Condition',
-            minWidth: 150,
-            format: (value) => <Chip label={value} size="small" />
-        },
-        {
-            id: 'priority',
-            label: 'Priority',
-            minWidth: 100,
-            format: (value) => formatStatus(value, {
-                'High': 'error',
-                'Medium': 'warning',
-                'Low': 'success'
-            })
-        },
-        {
-            id: 'status',
-            label: 'Status',
-            minWidth: 100,
-            format: (value) => formatStatus(value, {
-                'Active': 'success',
-                'Discharged': 'error',
-                'Pending': 'warning'
-            })
-        },
-        {
-            id: 'lastVisit',
-            label: 'Last Visit',
-            minWidth: 120,
-            format: (value) => formatDateTime(value)
-        },
-        {
-            id: 'nextAppointment',
-            label: 'Next Appointment',
-            minWidth: 150,
-            format: (value) => value ? formatDateTime(value) : 'Not scheduled'
-        }
-    ];
-
-    // Prepare patient table actions
-    const patientActions: TableAction[] = [
-        {
-            icon: <ViewIcon />,
-            onClick: handleViewPatient,
-            tooltip: 'View Patient'
-        },
-        {
-            icon: <EditIcon />,
-            onClick: handleEditPatient,
-            tooltip: 'Edit Patient'
-        }
-    ];
-
-    // Prepare appointment table columns
-    const appointmentColumns: TableColumn[] = [
-        {
-            id: 'time',
-            label: 'Time',
-            minWidth: 100,
-            format: (value, row) => (
-                <Box>
-                    <Typography variant="subtitle2">{value}</Typography>
-                    <Typography variant="body2" color="text.secondary">{row.date}</Typography>
-                </Box>
-            )
-        },
-        {
-            id: 'patientName',
-            label: 'Patient',
-            minWidth: 150
-        },
-        {
-            id: 'type',
-            label: 'Type',
-            minWidth: 120,
-            format: (value) => <Chip label={value} size="small" />
-        },
-        {
-            id: 'status',
-            label: 'Status',
-            minWidth: 100,
-            format: (value) => formatStatus(value, {
-                'Scheduled': 'success',
-                'Completed': 'info',
-                'Cancelled': 'error'
-            })
-        },
-        {
-            id: 'notes',
-            label: 'Notes',
-            minWidth: 200
-        }
-    ];
-
-    // Prepare appointment table actions
-    const appointmentActions: TableAction[] = [
-        {
-            icon: <ViewIcon />,
-            onClick: handleViewAppointment,
-            tooltip: 'View Appointment'
-        },
-        {
-            icon: <EditIcon />,
-            onClick: handleEditAppointment,
-            tooltip: 'Edit Appointment'
-        }
-    ];
-
-    // Prepare referral table columns
-    const referralColumns: TableColumn[] = [
-        {
-            id: 'patientId',
-            label: 'Patient',
-            minWidth: 150,
-            format: (value) => value ? `${value.firstName} ${value.lastName}` : 'N/A'
-        },
-        {
-            id: 'toHospital',
-            label: 'To Hospital',
-            minWidth: 150,
-            format: (value) => value?.name || 'N/A'
-        },
-        {
-            id: 'specialty',
-            label: 'Specialty',
-            minWidth: 120,
-            format: (value) => <Chip label={value} size="small" />
-        },
-        {
-            id: 'priority',
-            label: 'Priority',
-            minWidth: 100,
-            format: (value) => formatStatus(value, {
-                'High': 'error',
-                'Medium': 'warning',
-                'Low': 'success'
-            })
-        },
-        {
-            id: 'status',
-            label: 'Status',
-            minWidth: 100,
-            format: (value) => formatStatus(value, {
-                'Approved': 'success',
-                'Pending': 'warning',
-                'Rejected': 'error'
-            })
-        },
-        {
-            id: 'createdAt',
-            label: 'Date',
-            minWidth: 120,
-            format: (value) => formatDateTime(value)
-        }
-    ];
-
-    // Prepare referral table actions
-    const referralActions: TableAction[] = [
-        {
-            icon: <ViewIcon />,
-            onClick: handleViewReferral,
-            tooltip: 'View Referral'
-        },
-        {
-            icon: <EditIcon />,
-            onClick: handleEditReferral,
-            tooltip: 'Edit Referral'
-        }
-    ];
-
     // Prepare tab configurations
     const tabConfigs = [
         {
             label: 'My Patients',
-            content: (
-                <DataTable
-                    columns={patientColumns}
-                    data={data.patients || []}
-                    actions={patientActions}
-                    loading={loading}
-                    emptyMessage="No patients found"
-                />
-            ),
-            actionButton: {
-                label: 'Add Patient',
-                icon: <AddIcon />,
-                onClick: () => handleOpenDialog('patient')
-            }
+            content: <PatientsTab />
         },
         {
             label: 'Appointments',
-            content: (
-                <DataTable
-                    columns={appointmentColumns}
-                    data={data.appointments || []}
-                    actions={appointmentActions}
-                    loading={loading}
-                    emptyMessage="No appointments found"
-                />
-            ),
-            actionButton: {
-                label: 'Schedule Appointment',
-                icon: <AddIcon />,
-                onClick: () => handleOpenDialog('appointment')
-            }
+            content: <AppointmentsTab />
         },
         {
             label: 'Referrals',
-            content: (
-                <DataTable
-                    columns={referralColumns}
-                    data={data.referrals || []}
-                    actions={referralActions}
-                    loading={loading}
-                    emptyMessage="No referrals found"
-                />
-            ),
-            actionButton: {
-                label: 'Create Referral',
-                icon: <AddIcon />,
-                onClick: () => handleOpenDialog('referral')
-            }
+            content: <ReferralsTab />
         },
         {
             label: 'Analytics',
-            content: (
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                    <ActivityFeed
-                        activities={data.activities || []}
-                        loading={loading}
-                        title="My Activities"
-                        maxItems={5}
-                        sx={{ flex: 1 }}
-                    />
-                </Box>
-            )
+            content: <AnalyticsTab />
         }
     ];
 
@@ -442,26 +155,6 @@ const DoctorDashboard: React.FC = () => {
                 onChange={handleTabChange}
                 loading={loading}
             />
-
-            {/* Add/Edit Dialog */}
-            <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-                <DialogTitle>
-                    {dialogType === 'patient' && 'Add New Patient'}
-                    {dialogType === 'referral' && 'Create New Referral'}
-                    {dialogType === 'appointment' && 'Schedule Appointment'}
-                </DialogTitle>
-                <DialogContent>
-                    <Alert severity="info" sx={{ mb: 2 }}>
-                        This dialog will be implemented with proper form fields based on the selected type.
-                    </Alert>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog}>Cancel</Button>
-                    <Button variant="contained" onClick={handleCloseDialog}>
-                        Save
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </Container>
     );
 };

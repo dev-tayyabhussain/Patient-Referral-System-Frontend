@@ -165,6 +165,24 @@ export const doctorApi = {
     const response = await api.delete(`/api/users/${id}`);
     return response.data;
   },
+
+  // Get doctor's patients
+  getDoctorPatients: async (doctorId: string, params?: { status?: string; search?: string; page?: number; limit?: number }) => {
+    const response = await api.get(`/api/doctors/${doctorId}/patients`, { params });
+    return response.data;
+  },
+
+  // Get doctor's referrals
+  getDoctorReferrals: async (doctorId: string, params?: { status?: string; priority?: string; search?: string; page?: number; limit?: number }) => {
+    const response = await api.get(`/api/doctors/${doctorId}/referrals`, { params });
+    return response.data;
+  },
+
+  // Get doctor's analytics
+  getDoctorAnalytics: async (doctorId: string, params?: { period?: number }) => {
+    const response = await api.get(`/api/doctors/${doctorId}/analytics`, { params });
+    return response.data;
+  },
 };
 
 export const patientApi = {

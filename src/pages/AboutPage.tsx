@@ -118,7 +118,7 @@ const AboutPage: React.FC = () => {
             description: 'Reached milestone of 100+ connected hospitals nationwide.',
         },
         {
-            year: '2024',
+            year: '2025',
             title: 'National Expansion',
             description: 'Expanded to all 50 states with 500+ hospital partners.',
         },
