@@ -89,7 +89,7 @@ const AppointmentsPage: React.FC = () => {
             id: '1',
             patientName: 'John Smith',
             patientId: 'P001',
-            date: '2024-01-16',
+            date: '2025-01-16',
             time: '09:00 AM',
             type: 'Follow-up',
             status: 'Scheduled',
@@ -102,7 +102,7 @@ const AppointmentsPage: React.FC = () => {
             id: '2',
             patientName: 'Jane Doe',
             patientId: 'P002',
-            date: '2024-01-16',
+            date: '2025-01-16',
             time: '10:30 AM',
             type: 'Consultation',
             status: 'Scheduled',
@@ -115,7 +115,7 @@ const AppointmentsPage: React.FC = () => {
             id: '3',
             patientName: 'Alice Johnson',
             patientId: 'P003',
-            date: '2024-01-16',
+            date: '2025-01-16',
             time: '02:00 PM',
             type: 'New Patient',
             status: 'Scheduled',
@@ -128,7 +128,7 @@ const AppointmentsPage: React.FC = () => {
             id: '4',
             patientName: 'Bob Wilson',
             patientId: 'P004',
-            date: '2024-01-15',
+            date: '2025-01-15',
             time: '11:00 AM',
             type: 'Follow-up',
             status: 'Completed',
@@ -141,7 +141,7 @@ const AppointmentsPage: React.FC = () => {
             id: '5',
             patientName: 'Carol Brown',
             patientId: 'P005',
-            date: '2024-01-15',
+            date: '2025-01-15',
             time: '03:30 PM',
             type: 'Consultation',
             status: 'Cancelled',
@@ -214,9 +214,9 @@ const AppointmentsPage: React.FC = () => {
         return matchesSearch && matchesStatus;
     });
 
-    const todayAppointments = filteredAppointments.filter(apt => apt.date === '2024-01-16');
-    const upcomingAppointments = filteredAppointments.filter(apt => apt.date > '2024-01-16');
-    const pastAppointments = filteredAppointments.filter(apt => apt.date < '2024-01-16');
+    const todayAppointments = filteredAppointments.filter(apt => apt.date === '2025-01-16');
+    const upcomingAppointments = filteredAppointments.filter(apt => apt.date > '2025-01-16');
+    const pastAppointments = filteredAppointments.filter(apt => apt.date < '2025-01-16');
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);

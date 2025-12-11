@@ -44,7 +44,7 @@ const ContactPage: React.FC = () => {
         {
             icon: <EmailIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
             title: 'Email Us',
-            details: ['support@patientreferralsystem.com', 'sales@patientreferralsystem.com', 'partnerships@patientreferralsystem.com'],
+            details: ['patientreferralsystem@gmail.com'],
             description: 'Send us an email and we\'ll respond within 24 hours',
         },
         {
@@ -69,24 +69,10 @@ const ContactPage: React.FC = () => {
 
     const departments = [
         {
-            icon: <SupportIcon sx={{ fontSize: 32, color: 'primary.main' }} />,
-            title: 'Technical Support',
-            description: 'Get help with technical issues and system troubleshooting',
-            contact: 'support@patientreferralsystem.com',
-            responseTime: 'Within 2 hours',
-        },
-        {
-            icon: <BusinessIcon sx={{ fontSize: 32, color: 'secondary.main' }} />,
-            title: 'Sales & Partnerships',
-            description: 'Learn about our solutions and partnership opportunities',
-            contact: 'sales@patientreferralsystem.com',
-            responseTime: 'Within 4 hours',
-        },
-        {
             icon: <EmailIcon sx={{ fontSize: 32, color: 'success.main' }} />,
             title: 'General Inquiries',
             description: 'Questions about our services and general information',
-            contact: 'info@patientreferralsystem.com',
+            contact: 'patientreferralsystem@gmail.com',
             responseTime: 'Within 24 hours',
         },
     ];
@@ -168,13 +154,13 @@ const ContactPage: React.FC = () => {
                     </Typography>
                 </Box>
 
-                <Grid container spacing={4}>
+                <Grid container spacing={2}>
                     {contactInfo.map((info, index) => (
                         <Grid item xs={12} sm={6} md={3} key={index}>
                             <Card
                                 sx={{
                                     height: '100%',
-                                    p: 3,
+                                    p: 4,
                                     textAlign: 'center',
                                     transition: 'all 0.3s ease',
                                     '&:hover': {

@@ -35,7 +35,7 @@ const PublicLayout: React.FC = () => {
                             The National Healthcare Referral & Health Record Management System
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            © 2024 Patient Referral System. All rights reserved. Built with ❤️ for better healthcare.
+                            © 2025 Patient Referral System. All rights reserved
                         </Typography>
                     </Box>
                 </Container>
