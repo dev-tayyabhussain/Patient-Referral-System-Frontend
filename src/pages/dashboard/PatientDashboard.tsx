@@ -14,12 +14,11 @@ import {
 } from '@mui/material';
 import {
     Add as AddIcon,
-    Edit as EditIcon,
     Visibility as ViewIcon,
-    Schedule as ScheduleIcon,
     Assignment as AssignmentIcon,
-    CalendarToday as CalendarIcon,
     Description as DescriptionIcon,
+    TrendingUp as TrendingUpIcon,
+    LocalHospital as LocalHospitalIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../../hooks/useAuth';
 import { useDashboardData } from '../../hooks/useDashboardData';
@@ -31,20 +30,22 @@ import {
     TableColumn,
     TableAction
 } from '../../components/dashboard';
-import { formatStatus, formatAvatar, formatDateTime } from '../../components/dashboard/DataTable';
+import { formatStatus, formatDateTime } from '../../components/dashboard/DataTable';
 
 const PatientDashboard: React.FC = () => {
     const { user } = useAuth();
     const { data, loading, error } = useDashboardData('patient');
     const [tabValue, setTabValue] = useState(0);
     const [openDialog, setOpenDialog] = useState(false);
-    const [dialogType, setDialogType] = useState<'appointment' | 'record' | 'referral'>('appointment');
+    const [dialogType, setDialogType] = useState<'record'>('record');
+    const [selectedReferral, setSelectedReferral] = useState<any>(null);
+    const [viewReferralOpen, setViewReferralOpen] = useState(false);
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     };
 
-    const handleOpenDialog = (type: 'appointment' | 'record' | 'referral') => {
+    const handleOpenDialog = (type: 'record') => {
         setDialogType(type);
         setOpenDialog(true);
     };
@@ -53,24 +54,19 @@ const PatientDashboard: React.FC = () => {
         setOpenDialog(false);
     };
 
-    const handleViewAppointment = (appointment: any) => {
-        console.log('View appointment:', appointment);
-        // Implement view appointment logic
-    };
-
-    const handleEditAppointment = (appointment: any) => {
-        console.log('Edit appointment:', appointment);
-        // Implement edit appointment logic
-    };
-
     const handleViewRecord = (record: any) => {
         console.log('View record:', record);
         // Implement view record logic
     };
 
     const handleViewReferral = (referral: any) => {
-        console.log('View referral:', referral);
-        // Implement view referral logic
+        setSelectedReferral(referral);
+        setViewReferralOpen(true);
+    };
+
+    const handleCloseReferralView = () => {
+        setViewReferralOpen(false);
+        setSelectedReferral(null);
     };
 
     if (loading) {
@@ -109,100 +105,41 @@ const PatientDashboard: React.FC = () => {
     // Prepare stats for StatsGrid
     const statsData = [
         {
-            title: 'Next Appointment',
-            value: data.stats?.nextAppointment ? formatDateTime(data.stats.nextAppointment) : 'Not scheduled',
-            subtitle: `with ${data.stats?.primaryDoctor || 'Dr. Unknown'}`,
-            icon: <ScheduleIcon />,
-            color: 'primary' as const
-        },
-        {
-            title: 'Upcoming',
-            value: data.stats?.upcomingAppointments || 0,
-            subtitle: 'appointments scheduled',
-            icon: <CalendarIcon />,
-            color: 'primary' as const
-        },
-        {
-            title: 'Referrals',
-            value: data.stats?.completedReferrals || 0,
-            subtitle: `${data.stats?.pendingReferrals || 0} pending`,
+            title: 'Total Referrals',
+            value: data.stats?.totalReferrals || 0,
+            subtitle: data.stats?.nextAppointment
+                ? `Next: ${formatDateTime(data.stats.nextAppointment).split(',')[0]} at ${data.stats?.nextAppointmentHospital || 'Hospital'}`
+                : `${data.stats?.activeReferrals || 0} active`,
             icon: <AssignmentIcon />,
             color: 'primary' as const
         },
         {
-            title: 'Records',
-            value: data.stats?.medicalRecords || 0,
-            subtitle: 'medical records',
+            title: 'Pending Referrals',
+            value: data.stats?.pendingReferrals || 0,
+            subtitle: 'awaiting response',
+            icon: <TrendingUpIcon />,
+            color: 'warning' as const
+        },
+        {
+            title: 'Completed Referrals',
+            value: data.stats?.completedReferrals || 0,
+            subtitle: 'successfully completed',
+            icon: <LocalHospitalIcon />,
+            color: 'success' as const
+        },
+        {
+            title: 'Medical Records',
+            value: data.stats?.totalRecords || 0,
+            subtitle: 'total records',
             icon: <DescriptionIcon />,
-            color: 'primary' as const
-        }
-    ];
-
-    // Prepare appointment table columns
-    const appointmentColumns: TableColumn[] = [
-        {
-            id: 'dateTime',
-            label: 'Date & Time',
-            minWidth: 150,
-            format: (value, _row) => (
-                <Box>
-                    <Typography variant="subtitle2">{formatDateTime(value || _row.date || _row.createdAt)}</Typography>
-                </Box>
-            )
-        },
-        {
-            id: 'doctor',
-            label: 'Doctor',
-            minWidth: 200,
-            format: (value, _row) => formatAvatar(value, _row.doctorImage)
-        },
-        {
-            id: 'specialty',
-            label: 'Specialty',
-            minWidth: 120,
-            format: (value) => <Chip label={value} size="small" />
-        },
-        {
-            id: 'type',
-            label: 'Type',
-            minWidth: 120,
-            format: (value) => <Chip label={value} size="small" />
-        },
-        {
-            id: 'status',
-            label: 'Status',
-            minWidth: 100,
-            format: (value) => formatStatus(value, {
-                'Scheduled': 'success',
-                'Completed': 'info',
-                'Cancelled': 'error'
-            })
-        },
-        {
-            id: 'location',
-            label: 'Location',
-            minWidth: 150
-        }
-    ];
-
-    // Prepare appointment table actions
-    const appointmentActions: TableAction[] = [
-        {
-            icon: <ViewIcon />,
-            onClick: handleViewAppointment,
-            tooltip: 'View Appointment'
-        },
-        {
-            icon: <EditIcon />,
-            onClick: handleEditAppointment,
-            tooltip: 'Edit Appointment'
+            color: 'info' as const
         }
     ];
 
     // Prepare medical record table columns
     const recordColumns: TableColumn[] = [
         {
-            id: 'date',
+            id: 'visitDate',
             label: 'Date',
             minWidth: 120,
             format: (value) => formatDateTime(value)
@@ -211,7 +148,7 @@ const PatientDashboard: React.FC = () => {
             id: 'doctor',
             label: 'Doctor',
             minWidth: 200,
-            format: (value, _row) => formatAvatar(value, _row.doctorImage)
+            format: (value) => value ? `Dr. ${value.firstName} ${value.lastName}` : 'N/A'
         },
         {
             id: 'specialty',
@@ -222,7 +159,8 @@ const PatientDashboard: React.FC = () => {
         {
             id: 'diagnosis',
             label: 'Diagnosis',
-            minWidth: 150
+            minWidth: 150,
+            format: (value) => value?.primary || 'N/A'
         },
         {
             id: 'treatment',
@@ -231,19 +169,15 @@ const PatientDashboard: React.FC = () => {
         },
         {
             id: 'attachments',
-            label: 'Attachments',
-            minWidth: 150,
+            label: 'Files',
+            minWidth: 100,
             format: (value) => (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {value?.map((attachment: string, index: number) => (
-                        <Chip
-                            key={index}
-                            label={attachment}
-                            size="small"
-                            variant="outlined"
-                        />
-                    ))}
-                </Box>
+                <Chip
+                    label={`${value?.length || 0} files`}
+                    size="small"
+                    variant="outlined"
+                    color={value?.length > 0 ? 'primary' : 'default'}
+                />
             )
         }
     ];
@@ -266,15 +200,15 @@ const PatientDashboard: React.FC = () => {
             format: (value) => formatDateTime(value)
         },
         {
-            id: 'fromDoctor',
+            id: 'referringDoctor',
             label: 'From Doctor',
             minWidth: 200,
             format: (value) => value ? `Dr. ${value.firstName} ${value.lastName}` : 'N/A'
         },
         {
-            id: 'toHospital',
+            id: 'receivingHospital',
             label: 'To Hospital',
-            minWidth: 150,
+            minWidth: 180,
             format: (value) => value?.name || 'N/A'
         },
         {
@@ -288,9 +222,10 @@ const PatientDashboard: React.FC = () => {
             label: 'Priority',
             minWidth: 100,
             format: (value) => formatStatus(value, {
-                'High': 'error',
-                'Medium': 'warning',
-                'Low': 'success'
+                'urgent': 'error',
+                'high': 'error',
+                'medium': 'warning',
+                'low': 'success'
             })
         },
         {
@@ -298,10 +233,11 @@ const PatientDashboard: React.FC = () => {
             label: 'Status',
             minWidth: 100,
             format: (value) => formatStatus(value, {
-                'Completed': 'success',
-                'Approved': 'info',
-                'Pending': 'warning',
-                'Rejected': 'error'
+                'completed': 'success',
+                'accepted': 'info',
+                'pending': 'warning',
+                'rejected': 'error',
+                'cancelled': 'default'
             })
         }
     ];
@@ -318,21 +254,16 @@ const PatientDashboard: React.FC = () => {
     // Prepare tab configurations
     const tabConfigs = [
         {
-            label: 'Appointments',
+            label: 'Referrals',
             content: (
                 <DataTable
-                    columns={appointmentColumns}
-                    data={data.appointments || []}
-                    actions={appointmentActions}
+                    columns={referralColumns}
+                    data={data.referrals || []}
+                    actions={referralActions}
                     loading={loading}
-                    emptyMessage="No appointments found"
+                    emptyMessage="No referrals found"
                 />
-            ),
-            actionButton: {
-                label: 'Book Appointment',
-                icon: <AddIcon />,
-                onClick: () => handleOpenDialog('appointment')
-            }
+            )
         },
         {
             label: 'Medical Records',
@@ -352,31 +283,14 @@ const PatientDashboard: React.FC = () => {
             }
         },
         {
-            label: 'Referrals',
-            content: (
-                <DataTable
-                    columns={referralColumns}
-                    data={data.referrals || []}
-                    actions={referralActions}
-                    loading={loading}
-                    emptyMessage="No referrals found"
-                />
-            ),
-            actionButton: {
-                label: 'Request Referral',
-                icon: <AddIcon />,
-                onClick: () => handleOpenDialog('referral')
-            }
-        },
-        {
             label: 'Health Summary',
             content: (
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <ActivityFeed
                         activities={data.activities || []}
                         loading={loading}
-                        title="Health Activities"
-                        maxItems={5}
+                        title="Recent Activities"
+                        maxItems={10}
                         sx={{ flex: 1 }}
                     />
                 </Box>
@@ -414,9 +328,7 @@ const PatientDashboard: React.FC = () => {
             {/* Add/Edit Dialog */}
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
                 <DialogTitle>
-                    {dialogType === 'appointment' && 'Book Appointment'}
                     {dialogType === 'record' && 'Request Medical Record'}
-                    {dialogType === 'referral' && 'Request Referral'}
                 </DialogTitle>
                 <DialogContent>
                     <Alert severity="info" sx={{ mb: 2 }}>
@@ -428,6 +340,104 @@ const PatientDashboard: React.FC = () => {
                     <Button variant="contained" onClick={handleCloseDialog}>
                         Submit
                     </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Referral View Modal */}
+            <Dialog open={viewReferralOpen} onClose={handleCloseReferralView} maxWidth="md" fullWidth>
+                <DialogTitle>
+                    Referral Details
+                    {selectedReferral && (
+                        <Chip
+                            label={selectedReferral.status}
+                            size="small"
+                            sx={{ ml: 2 }}
+                            color={
+                                selectedReferral.status === 'completed' ? 'success' :
+                                    selectedReferral.status === 'accepted' ? 'info' :
+                                        selectedReferral.status === 'pending' ? 'warning' : 'error'
+                            }
+                        />
+                    )}
+                </DialogTitle>
+                <DialogContent>
+                    {selectedReferral && (
+                        <Box sx={{ mt: 2 }}>
+                            <Typography variant="h6" gutterBottom>Referral Information</Typography>
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="body2" color="text.secondary">Referral ID</Typography>
+                                <Typography variant="body1">{selectedReferral.referralId || 'N/A'}</Typography>
+                            </Box>
+
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="body2" color="text.secondary">From Doctor</Typography>
+                                <Typography variant="body1">
+                                    {selectedReferral.referringDoctor
+                                        ? `Dr. ${selectedReferral.referringDoctor.firstName} ${selectedReferral.referringDoctor.lastName} - ${selectedReferral.referringDoctor.specialization}`
+                                        : 'N/A'}
+                                </Typography>
+                            </Box>
+
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="body2" color="text.secondary">To Hospital</Typography>
+                                <Typography variant="body1">
+                                    {selectedReferral.receivingHospital?.name || 'N/A'}
+                                </Typography>
+                                {selectedReferral.receivingHospital?.address && (
+                                    <Typography variant="body2" color="text.secondary">
+                                        {selectedReferral.receivingHospital.address.street}, {selectedReferral.receivingHospital.address.city}
+                                    </Typography>
+                                )}
+                            </Box>
+
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="body2" color="text.secondary">Specialty & Priority</Typography>
+                                <Box sx={{ display: 'flex', gap: 1, mt: 0.5 }}>
+                                    <Chip label={selectedReferral.specialty} size="small" />
+                                    <Chip
+                                        label={selectedReferral.priority}
+                                        size="small"
+                                        color={
+                                            selectedReferral.priority === 'urgent' || selectedReferral.priority === 'high' ? 'error' :
+                                                selectedReferral.priority === 'medium' ? 'warning' : 'success'
+                                        }
+                                    />
+                                </Box>
+                            </Box>
+
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="body2" color="text.secondary">Reason for Referral</Typography>
+                                <Typography variant="body1">{selectedReferral.reason || 'N/A'}</Typography>
+                            </Box>
+
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="body2" color="text.secondary">Chief Complaint</Typography>
+                                <Typography variant="body1">{selectedReferral.chiefComplaint || 'N/A'}</Typography>
+                            </Box>
+
+                            {selectedReferral.appointment?.scheduledDate && (
+                                <Box sx={{ mb: 3 }}>
+                                    <Typography variant="body2" color="text.secondary">Appointment</Typography>
+                                    <Typography variant="body1">
+                                        {formatDateTime(selectedReferral.appointment.scheduledDate)}
+                                    </Typography>
+                                    {selectedReferral.appointment.location && (
+                                        <Typography variant="body2" color="text.secondary">
+                                            Location: {selectedReferral.appointment.location}
+                                        </Typography>
+                                    )}
+                                </Box>
+                            )}
+
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="body2" color="text.secondary">Created</Typography>
+                                <Typography variant="body1">{formatDateTime(selectedReferral.createdAt)}</Typography>
+                            </Box>
+                        </Box>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseReferralView}>Close</Button>
                 </DialogActions>
             </Dialog>
         </Container>

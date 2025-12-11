@@ -66,12 +66,12 @@ const HospitalSidebar: React.FC<HospitalSidebarProps> = ({ open, onClose, varian
             icon: <AssignmentIcon />,
             description: 'Referral management',
         },
-        {
-            title: 'Appointments',
-            path: '/dashboard/appointments',
-            icon: <ScheduleIcon />,
-            description: 'Appointment scheduling',
-        },
+        // {
+        //     title: 'Appointments',
+        //     path: '/dashboard/appointments',
+        //     icon: <ScheduleIcon />,
+        //     description: 'Appointment scheduling',
+        // },
         {
             title: 'Profile',
             path: '/dashboard/profile',

@@ -33,6 +33,7 @@ import AppointmentsPage from '../pages/doctor/AppointmentsPage';
 
 // Patient Pages
 import BookAppointmentPage from '../pages/patient/BookAppointmentPage';
+import MyDoctorsHospitals from '../pages/patient/MyDoctorsHospitals';
 
 // Components
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -158,6 +159,16 @@ const AppRoutes: React.FC = () => {
                     element={
                         <RoleBasedRoute allowedRoles={['patient']}>
                             <BookAppointmentPage />
+                        </RoleBasedRoute>
+                    }
+                />
+
+                {/* My Doctors & Hospitals - Patient only */}
+                <Route
+                    path="my-doctors-hospitals"
+                    element={
+                        <RoleBasedRoute allowedRoles={['patient']}>
+                            <MyDoctorsHospitals />
                         </RoleBasedRoute>
                     }
                 />
