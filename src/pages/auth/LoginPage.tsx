@@ -54,6 +54,11 @@ const LoginPage: React.FC = () => {
         }
     };
 
+    const handleFormSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        handleSubmit(onSubmit)(e);
+    };
+
     return (
         <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 p-4">
             <motion.div
@@ -92,7 +97,7 @@ const LoginPage: React.FC = () => {
                             transition={{ delay: 0.2 }}
                             className="text-4xl md:text-5xl font-bold mb-6 leading-tight"
                         >
-                            Welcome to <br /> Medinet
+                            Welcome to <br /> Patient Referral System
                         </motion.h1>
                         <motion.p
                             initial={{ opacity: 0 }}
@@ -121,7 +126,7 @@ const LoginPage: React.FC = () => {
                                 </div>
                             )}
 
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                            <form onSubmit={handleFormSubmit} className="space-y-6" noValidate>
                                 <div className="space-y-2">
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -163,19 +168,6 @@ const LoginPage: React.FC = () => {
                                     {errors.password && (
                                         <p className="text-red-500 text-xs ml-4">{errors.password.message}</p>
                                     )}
-                                </div>
-
-                                <div className="flex items-center justify-between text-sm px-2">
-                                    <FormControlLabel
-                                        control={<Checkbox size="small" sx={{ color: '#1988C8', '&.Mui-checked': { color: '#1988C8' } }} />}
-                                        label={<span className="text-gray-500 text-sm">Remember</span>}
-                                    />
-                                    <RouterLink
-                                        to="/forgot-password"
-                                        className="text-gray-400 hover:text-[#1988C8] transition-colors font-medium"
-                                    >
-                                        Forgot password?
-                                    </RouterLink>
                                 </div>
 
                                 <motion.button
