@@ -14,6 +14,7 @@ import {
     Divider,
 } from '@mui/material';
 import { referralApi } from '../../utils/approvalApi';
+import { useAuth } from '../../hooks/useAuth';
 
 interface ViewReferralDialogProps {
     open: boolean;
@@ -23,9 +24,11 @@ interface ViewReferralDialogProps {
 }
 
 const ViewReferralDialog: React.FC<ViewReferralDialogProps> = ({ open, onClose, referralId, onEdit }) => {
+    const { user } = useAuth();
     const [referral, setReferral] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
         if (open && referralId) {
@@ -52,6 +55,51 @@ const ViewReferralDialog: React.FC<ViewReferralDialogProps> = ({ open, onClose, 
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleStatusUpdate = async (status: 'accepted' | 'rejected') => {
+        if (!referralId) return;
+        setUpdating(true);
+        try {
+            await referralApi.updateReferralStatus(referralId, status);
+            // Refresh referral data
+            await fetchReferral();
+            // Notify parent to refresh list if needed
+            if (onEdit) {
+                // We abuse onEdit slightly to trigger a refresh if we pass a callback, 
+                // but since onEdit is for opening edit dialog, we might need a separate onRefresh prop.
+                // For now, just refreshing the local view is good. 
+            }
+        } catch (err: any) {
+            setError(err.response?.data?.message || `Failed to ${status} referral`);
+        } finally {
+            setUpdating(false);
+        }
+    };
+
+    const canAcceptReject = () => {
+        if (!referral || !user || referral.status !== 'pending') return false;
+
+        // Hospital Admin of Receiving Hospital
+        if (user.role === 'hospital' && user.hospitalId && referral.receivingHospital) {
+            // Check if receivingHospital is an object (populated) or string
+            const receivingHospitalId = typeof referral.receivingHospital === 'object'
+                ? referral.receivingHospital._id
+                : referral.receivingHospital;
+
+            return receivingHospitalId === user.hospitalId;
+        }
+
+        // Receiving Doctor
+        if (user.role === 'doctor' && referral.receivingDoctor) {
+            const receivingDoctorId = typeof referral.receivingDoctor === 'object'
+                ? referral.receivingDoctor._id
+                : referral.receivingDoctor;
+
+            return receivingDoctorId === user._id;
+        }
+
+        return false;
     };
 
     const getStatusColor = (status: string) => {
@@ -183,21 +231,21 @@ const ViewReferralDialog: React.FC<ViewReferralDialogProps> = ({ open, onClose, 
                                 <Grid item xs={12}>
                                     <Typography variant="subtitle2" color="text.secondary">Diagnosis</Typography>
                                     <Typography variant="body1">
-                                        {typeof referral.diagnosis === 'object' 
+                                        {typeof referral.diagnosis === 'object'
                                             ? (referral.diagnosis.primary || 'N/A')
                                             : (referral.diagnosis || 'N/A')
                                         }
                                     </Typography>
-                                    {typeof referral.diagnosis === 'object' && 
-                                     referral.diagnosis.secondary && 
-                                     referral.diagnosis.secondary.length > 0 && (
-                                        <Box sx={{ mt: 1 }}>
-                                            <Typography variant="caption" color="text.secondary">Secondary:</Typography>
-                                            <Typography variant="body2">
-                                                {referral.diagnosis.secondary.join(', ')}
-                                            </Typography>
-                                        </Box>
-                                    )}
+                                    {typeof referral.diagnosis === 'object' &&
+                                        referral.diagnosis.secondary &&
+                                        referral.diagnosis.secondary.length > 0 && (
+                                            <Box sx={{ mt: 1 }}>
+                                                <Typography variant="caption" color="text.secondary">Secondary:</Typography>
+                                                <Typography variant="body2">
+                                                    {referral.diagnosis.secondary.join(', ')}
+                                                </Typography>
+                                            </Box>
+                                        )}
                                 </Grid>
                             )}
                             {referral.treatmentPlan && (
@@ -217,8 +265,27 @@ const ViewReferralDialog: React.FC<ViewReferralDialogProps> = ({ open, onClose, 
                 ) : null}
             </DialogContent>
             <DialogActions>
+                {canAcceptReject() && (
+                    <>
+                        <Button
+                            onClick={() => handleStatusUpdate('rejected')}
+                            color="error"
+                            disabled={updating}
+                        >
+                            Reject
+                        </Button>
+                        <Button
+                            onClick={() => handleStatusUpdate('accepted')}
+                            color="success"
+                            variant="contained"
+                            disabled={updating}
+                        >
+                            Accept
+                        </Button>
+                    </>
+                )}
                 <Button onClick={onClose}>Close</Button>
-                {referral && onEdit && (
+                {referral && onEdit && !canAcceptReject() && (
                     <Button variant="contained" onClick={() => onEdit(referral)}>
                         Edit
                     </Button>
@@ -229,4 +296,3 @@ const ViewReferralDialog: React.FC<ViewReferralDialogProps> = ({ open, onClose, 
 };
 
 export default ViewReferralDialog;
-

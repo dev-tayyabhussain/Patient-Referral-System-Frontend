@@ -143,9 +143,9 @@ const ReferralsPage: React.FC = () => {
         }
     };
 
-    // Load hospitals, patients, and doctors for form (only for hospital role)
+    // Load hospitals, patients, and doctors for form
     useEffect(() => {
-        if (user?.role !== 'hospital') return;
+        if (user?.role !== 'hospital' && user?.role !== 'doctor') return;
 
         const loadData = async () => {
             try {
@@ -153,15 +153,33 @@ const ReferralsPage: React.FC = () => {
                 setLoadingPatients(true);
                 setLoadingReferringDoctors(true);
 
-                const [hospitalsRes, patientsRes, referringDoctorsRes] = await Promise.all([
+                // For doctors, we need to fetch all approved hospitals to refer to
+                // For patients, doctors can only refer their own patients (or all patients if they are clinic owner?)
+                // Let's assume for now they can refer any patient they have access to.
+                // Since we don't have a specific "my patients" endpoint for doctors yet that returns list, 
+                // we might need to rely on what patientApi.getPatients returns for a doctor role.
+
+                const promises: Promise<any>[] = [
                     hospitalApi.getApprovedHospitals(),
-                    patientApi.getPatients({ hospitalId: user?.hospitalId, limit: 100 }),
-                    doctorApi.getDoctors({ hospitalId: user?.hospitalId, limit: 100 })
-                ]);
+                ];
+
+                if (user?.role === 'hospital') {
+                    promises.push(patientApi.getPatients({ hospitalId: user?.hospitalId, limit: 100 }));
+                    promises.push(doctorApi.getDoctors({ hospitalId: user?.hospitalId, limit: 100 }));
+                } else if (user?.role === 'doctor') {
+                    // For doctors, we might want to fetch patients they have appointments with or all patients if simple
+                    // Using getPatients without filters might return all patients if backend allows, or we need a specific filter
+                    promises.push(patientApi.getPatients({ limit: 100 })); // Adjust based on backend capability
+                    // Referring doctors list - for a doctor, it's themselves, so maybe empty list or just themselves?
+                    // The form handles "auto-assign" if empty, but for clinic doctor, they are the referring doctor.
+                    promises.push(Promise.resolve({ data: { doctors: [user] } }));
+                }
+
+                const [hospitalsRes, patientsRes, referringDoctorsRes] = await Promise.all(promises);
 
                 setHospitals(hospitalsRes.data);
-                setPatients(patientsRes.data?.patients || []);
-                setReferringDoctors(referringDoctorsRes.data?.doctors || []);
+                setPatients(patientsRes?.data?.patients || []);
+                setReferringDoctors(referringDoctorsRes?.data?.doctors || []);
             } catch (error) {
                 console.error('Error loading form data:', error);
             } finally {
@@ -171,7 +189,7 @@ const ReferralsPage: React.FC = () => {
             }
         };
         loadData();
-    }, [user?.hospitalId, user?.role]);
+    }, [user?.hospitalId, user?.role, user]);
 
     // Fetch receiving doctors whenever receiving hospital changes
     useEffect(() => {
@@ -359,7 +377,7 @@ const ReferralsPage: React.FC = () => {
                     </Typography>
                 </Box>
                 <Box display="flex" gap={2}>
-                    {user?.role === 'hospital' && (
+                    {(user?.role === 'hospital' || (user?.role === 'doctor' && user?.practiceType === 'own_clinic')) && (
                         <Button
                             variant="contained"
                             startIcon={<Add />}
@@ -596,6 +614,11 @@ const ReferralsPage: React.FC = () => {
                                                                 {referral.referringHospital.name}
                                                             </Typography>
                                                         )}
+                                                        {referral.referringClinic && (
+                                                            <Typography variant="caption" color="text.secondary">
+                                                                {referral.referringClinic.name}
+                                                            </Typography>
+                                                        )}
                                                     </TableCell>
                                                     <TableCell>
                                                         <Box display="flex" alignItems="center">
@@ -700,8 +723,10 @@ const ReferralsPage: React.FC = () => {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <Typography variant="subtitle2" color="text.secondary">Referring Hospital</Typography>
-                                    <Typography variant="body1">{viewingReferral.referringHospital?.name || 'N/A'}</Typography>
+                                    <Typography variant="subtitle2" color="text.secondary">Referring Facility</Typography>
+                                    <Typography variant="body1">
+                                        {viewingReferral.referringHospital?.name || viewingReferral.referringClinic?.name || 'N/A'}
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <Typography variant="subtitle2" color="text.secondary">Receiving Hospital</Typography>
@@ -749,7 +774,7 @@ const ReferralsPage: React.FC = () => {
             </Dialog>
 
             {/* Create Referral Dialog */}
-            {user?.role === 'hospital' && (
+            {(user?.role === 'hospital' || (user?.role === 'doctor' && user?.practiceType === 'own_clinic')) && (
                 <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)} maxWidth="md" fullWidth>
                     <DialogTitle>Create New Referral</DialogTitle>
                     <DialogContent>

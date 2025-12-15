@@ -13,6 +13,8 @@ export interface User {
   licenseNumber?: string;
   specialization?: string;
   yearsOfExperience?: number;
+  practiceType?: 'own_clinic' | 'hospital';
+  clinicId?: string;
   isActive: boolean;
   isEmailVerified: boolean;
   approvalStatus: 'pending' | 'approved' | 'rejected';

@@ -96,17 +96,6 @@ const DoctorDashboard: React.FC = () => {
                 isPositive: (data.stats?.monthlyGrowth?.referrals || 0) >= 0
             }
         },
-        {
-            title: 'Rating',
-            value: `${data.stats?.averageRating || 0}/5`,
-            subtitle: 'Patient satisfaction',
-            icon: <AssessmentIcon />,
-            color: 'primary' as const,
-            progress: {
-                value: (data.stats?.averageRating || 0) * 20,
-                label: `Based on ${data.stats?.totalPatients || 0} reviews`
-            }
-        }
     ];
 
     // Prepare tab configurations
