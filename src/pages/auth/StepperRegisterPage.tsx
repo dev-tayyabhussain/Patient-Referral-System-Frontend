@@ -36,10 +36,7 @@ const createValidationSchema = (selectedRole: string) => {
         firstName: yup.string().required('First name is required'),
         lastName: yup.string().required('Last name is required'),
         email: yup.string().email('Invalid email').required('Email is required'),
-        phone: yup
-            .string()
-            .required('Phone number is required')
-            .matches(/^\+?[1-9]\d{7,14}$/, 'Enter a valid international phone like +1234567890'),
+        phone: yup.string().required('Phone number is required'),
         dateOfBirth: yup.string().required('Date of birth is required'),
         address: yup.string().required('Address is required'),
         password: yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
@@ -76,7 +73,7 @@ const createValidationSchema = (selectedRole: string) => {
                 otherwise: (schema) => schema.notRequired(),
             }),
             specialization: yup.string().required('Specialization is required'),
-            licenseNumber: yup.string().required('Medical license number is required'),
+            licenseNumber: yup.string().required('Medical license number is required').min(3, 'License number must be at least 3 characters').max(20, 'License number must be at most 20 characters'),
             yearsOfExperience: yup.number().required('Years of experience is required'),
             qualification: yup.string().required('Qualification is required'),
         });
@@ -312,7 +309,8 @@ const StepperRegisterPage: React.FC = () => {
             }
         } catch (error: any) {
             console.error('Registration error:', error);
-            toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
+            const errorMessage = error.response?.data?.errors?.[0]?.message || error.response?.data?.error || error.response?.data?.message || 'Registration failed. Please try again.';
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
         }
