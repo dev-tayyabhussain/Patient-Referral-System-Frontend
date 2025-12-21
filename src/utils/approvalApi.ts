@@ -1,5 +1,5 @@
 import api from './api';
-import { PendingUser, PendingHospital, ApprovalStats, Hospital } from '../types/hospital';
+import { ApprovalStats, Hospital } from '../types/hospital';
 
 export const approvalApi = {
   // Get pending users (Super Admin)
@@ -293,6 +293,53 @@ export const referralApi = {
   // Update referral status
   updateReferralStatus: async (id: string, status: string, notes?: string) => {
     const response = await api.patch(`/api/referrals/${id}/status`, { status, notes });
+    return response.data;
+  },
+};
+
+export const recordApi = {
+  // Get all records
+  getRecords: async (params?: { 
+    patient?: string; 
+    doctor?: string; 
+    specialty?: string; 
+    startDate?: string; 
+    endDate?: string; 
+    status?: string; 
+    page?: number; 
+    limit?: number 
+  }) => {
+    const response = await api.get('/api/records', { params });
+    return response.data;
+  },
+
+  // Get single record
+  getRecordById: async (id: string) => {
+    const response = await api.get(`/api/records/${id}`);
+    return response.data;
+  },
+
+  // Create record (Doctors only)
+  createRecord: async (recordData: any) => {
+    const response = await api.post('/api/records', recordData);
+    return response.data;
+  },
+
+  // Update record (Doctors only)
+  updateRecord: async (id: string, recordData: any) => {
+    const response = await api.put(`/api/records/${id}`, recordData);
+    return response.data;
+  },
+
+  // Upload files
+  uploadRecordFiles: async (id: string, files: any[]) => {
+    const response = await api.post(`/api/records/${id}/files`, { files });
+    return response.data;
+  },
+
+  // Get record files
+  getRecordFiles: async (id: string) => {
+    const response = await api.get(`/api/records/${id}/files`);
     return response.data;
   },
 };

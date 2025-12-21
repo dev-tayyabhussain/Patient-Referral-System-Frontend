@@ -16,8 +16,6 @@ A comprehensive healthcare management platform frontend built with React, TypeSc
 
 - **Super Admin**: System administration and hospital approval
 - **Hospital Admin**: Hospital management and doctor approval
-- **Doctor**: Patient care and appointment management
-- **Patient**: Appointment booking and health record access
 
 ### Approval Workflow
 

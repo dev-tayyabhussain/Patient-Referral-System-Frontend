@@ -27,7 +27,7 @@ const roles = [
     {
         value: 'patient',
         label: 'Patient',
-        description: 'Access your health records and manage appointments',
+        description: 'Access your health records and manage referrals',
         icon: <PersonIcon sx={{ fontSize: 40, color: '#1988C8' }} />,
         color: '#1988C8',
     },

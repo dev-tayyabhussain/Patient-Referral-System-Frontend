@@ -12,7 +12,6 @@ import FeaturesPage from '../pages/FeaturesPage';
 import AboutPage from '../pages/AboutPage';
 import ContactPage from '../pages/ContactPage';
 import LoginPage from '../pages/auth/LoginPage';
-import RegisterPage from '../pages/auth/RegisterPage';
 import StepperRegisterPage from '../pages/auth/StepperRegisterPage';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import EditProfilePage from '../pages/profile/EditProfilePage';
@@ -38,6 +37,7 @@ import MyDoctorsHospitals from '../pages/patient/MyDoctorsHospitals';
 // Components
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ApprovalStatus from '../components/auth/ApprovalStatus';
+import MedicalRecordsPage from '../pages/patient/MedicalRecordsPage';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -169,6 +169,16 @@ const AppRoutes: React.FC = () => {
                     element={
                         <RoleBasedRoute allowedRoles={['patient']}>
                             <MyDoctorsHospitals />
+                        </RoleBasedRoute>
+                    }
+                />
+
+                {/* Medical Records - Patient only */}
+                <Route
+                    path="records"
+                    element={
+                        <RoleBasedRoute allowedRoles={['patient']}>
+                            <MedicalRecordsPage />
                         </RoleBasedRoute>
                     }
                 />
