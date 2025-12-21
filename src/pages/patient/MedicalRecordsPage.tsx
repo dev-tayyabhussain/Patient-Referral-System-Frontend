@@ -97,6 +97,27 @@ const MedicalRecordsPage: React.FC = () => {
         }
     };
 
+    const handleDownload = () => {
+        const data = {
+            patient: {
+                name: `${user?.firstName} ${user?.lastName}`,
+                email: user?.email,
+                downloadDate: new Date().toISOString()
+            },
+            medicalRecords: records,
+            referrals: referrals
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `medical_records_${user?.firstName}_${user?.lastName}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
             case 'completed':
@@ -338,7 +359,13 @@ const MedicalRecordsPage: React.FC = () => {
                                 </Box>
                             </Box>
                             <Divider sx={{ my: 2 }} />
-                            <Button fullWidth variant="outlined" startIcon={<ServiceIcon />} sx={{ mb: 1 }}>
+                            <Button
+                                fullWidth
+                                variant="outlined"
+                                startIcon={<ServiceIcon />}
+                                sx={{ mb: 1 }}
+                                onClick={handleDownload}
+                            >
                                 Download All Records
                             </Button>
                         </CardContent>
