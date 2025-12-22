@@ -74,12 +74,12 @@ const MyDoctorsHospitals: React.FC = () => {
             const token = localStorage.getItem('token');
 
             // Fetch referrals to get doctors and hospitals
-            const referralsResponse = await axios.get(`${API_BASE_URL}/api/referrals`, {
+            const referralsResponse = await axios.get(`${API_BASE_URL}api/referrals`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
             // Fetch medical records to get doctors and hospitals
-            const recordsResponse = await axios.get(`${API_BASE_URL}/api/records`, {
+            const recordsResponse = await axios.get(`${API_BASE_URL}api/records`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

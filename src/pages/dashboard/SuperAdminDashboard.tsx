@@ -24,6 +24,7 @@ import {
     Avatar,
     Card,
     CardContent,
+    Divider,
 } from '@mui/material';
 import {
     Add as AddIcon,
@@ -90,8 +91,10 @@ const SuperAdminDashboard: React.FC = () => {
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openViewDialog, setOpenViewDialog] = useState(false);
+    const [openUserViewDialog, setOpenUserViewDialog] = useState(false);
     const [selectedHospital, setSelectedHospital] = useState<any>(null);
     const [viewHospital, setViewHospital] = useState<any>(null);
+    const [viewUser, setViewUser] = useState<any>(null);
     const [editLoading, setEditLoading] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [deleteUsers, setDeleteUsers] = useState(false);
@@ -841,13 +844,13 @@ const SuperAdminDashboard: React.FC = () => {
         }
     ];
 
-    // Prepare user table actions (view only for now)
+    // Prepare user table actions
     const userActions: TableAction[] = [
         {
             icon: <ViewIcon />,
-            onClick: (_user: any) => {
-                // View user details - can be implemented later
-                toast.info('View user details functionality will be implemented');
+            onClick: (user: any) => {
+                setViewUser(user);
+                setOpenUserViewDialog(true);
             },
             tooltip: 'View User'
         }
@@ -1958,6 +1961,105 @@ const SuperAdminDashboard: React.FC = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenViewDialog(false)}>Close</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* View User Details Dialog */}
+            <Dialog
+                open={openUserViewDialog}
+                onClose={() => setOpenUserViewDialog(false)}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                    sx: { borderRadius: 2 }
+                }}
+            >
+                <DialogTitle sx={{ borderBottom: 1, borderColor: 'divider', pb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <ViewIcon color="primary" />
+                    User Details
+                </DialogTitle>
+                <DialogContent sx={{ mt: 2 }}>
+                    {viewUser && (
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <Avatar sx={{ width: 64, height: 64, bgcolor: 'primary.main', mr: 2, fontSize: '2rem' }}>
+                                    {getRoleIcon(viewUser.role)}
+                                </Avatar>
+                                <Box>
+                                    <Typography variant="h5" fontWeight="bold">
+                                        {viewUser.firstName} {viewUser.lastName}
+                                    </Typography>
+                                    <Chip
+                                        label={viewUser.role?.replace('_', ' ').toUpperCase()}
+                                        color={getRoleColor(viewUser.role) as any}
+                                        size="small"
+                                        sx={{ mt: 0.5 }}
+                                    />
+                                </Box>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Typography variant="caption" color="text.secondary">Email Address</Typography>
+                                <Typography variant="body1" fontWeight="500">{viewUser.email}</Typography>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Typography variant="caption" color="text.secondary">Account Status</Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                                    <Chip
+                                        label={getUserStatusLabel(viewUser)}
+                                        color={getUserStatusColor(viewUser) as any}
+                                        size="small"
+                                    />
+                                    <Typography variant="body2" color="text.secondary">
+                                        ({viewUser.isActive ? 'Active' : 'Inactive'})
+                                    </Typography>
+                                </Box>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Typography variant="caption" color="text.secondary">Assigned Facility</Typography>
+                                <Typography variant="body1" fontWeight="500">
+                                    {viewUser.hospitalId?.name || viewUser.clinicId?.name || 'Not Assigned'}
+                                </Typography>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Typography variant="caption" color="text.secondary">Member Since</Typography>
+                                <Typography variant="body1" fontWeight="500">
+                                    {formatDateTime(viewUser.createdAt)}
+                                </Typography>
+                            </Grid>
+
+                            {viewUser.phone && (
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="caption" color="text.secondary">Phone Number</Typography>
+                                    <Typography variant="body1" fontWeight="500">{viewUser.phone}</Typography>
+                                </Grid>
+                            )}
+
+                            {viewUser.specialization && (
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="caption" color="text.secondary">Specialization</Typography>
+                                    <Typography variant="body1" fontWeight="500">{viewUser.specialization}</Typography>
+                                </Grid>
+                            )}
+
+                            <Grid item xs={12}>
+                                <Divider />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Typography variant="caption" color="text.secondary">Internal User ID</Typography>
+                                <Typography variant="body2" sx={{ fontFamily: 'monospace', bgcolor: 'grey.100', p: 1, borderRadius: 1 }}>
+                                    {viewUser._id}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    )}
+                </DialogContent>
+                <DialogActions sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
+                    <Button onClick={() => setOpenUserViewDialog(false)} variant="outlined">Close</Button>
                 </DialogActions>
             </Dialog>
         </Container>

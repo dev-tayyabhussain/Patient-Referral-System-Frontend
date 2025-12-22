@@ -225,23 +225,18 @@ const ReferralsPage: React.FC = () => {
         };
     }, [formData.receivingHospitalId]);
 
-    // Initial fetch
-    useEffect(() => {
-        fetchReferrals(1);
-    }, []);
-
-    // Debounced search
+    // Consolidate fetch effects (Initial, Search, and Filters)
     useEffect(() => {
         const timer = setTimeout(() => {
-            fetchReferrals(1, filters.status !== 'all' ? filters.status : undefined, filters.priority !== 'all' ? filters.priority : undefined, searchTerm || undefined);
+            fetchReferrals(
+                1,
+                filters.status !== 'all' ? filters.status : undefined,
+                filters.priority !== 'all' ? filters.priority : undefined,
+                searchTerm || undefined
+            );
         }, 500);
         return () => clearTimeout(timer);
-    }, [searchTerm]);
-
-    // Filter changes
-    useEffect(() => {
-        fetchReferrals(1, filters.status !== 'all' ? filters.status : undefined, filters.priority !== 'all' ? filters.priority : undefined, searchTerm || undefined);
-    }, [filters.status, filters.priority]);
+    }, [searchTerm, filters.status, filters.priority]);
 
     const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
         fetchReferrals(page, filters.status !== 'all' ? filters.status : undefined, filters.priority !== 'all' ? filters.priority : undefined, searchTerm || undefined);

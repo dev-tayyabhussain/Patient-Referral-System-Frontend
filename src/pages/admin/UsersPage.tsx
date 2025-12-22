@@ -32,6 +32,7 @@ import {
     Pagination,
     InputAdornment,
     CircularProgress,
+    Divider,
 } from '@mui/material';
 import {
     Edit as EditIcon,
@@ -43,6 +44,7 @@ import {
     MedicalServices as MedicalIcon,
     Group as GroupIcon,
     Search as SearchIcon,
+    Visibility,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import { userApi } from '../../utils/approvalApi';
@@ -70,6 +72,7 @@ const UsersPage: React.FC = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [toggleLoading, setToggleLoading] = useState<string | null>(null);
     const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+    const [viewDialogOpen, setViewDialogOpen] = useState(false);
 
     const getRoleIcon = (role: string) => {
         switch (role) {
@@ -162,30 +165,12 @@ const UsersPage: React.FC = () => {
         }
     };
 
-    // Fetch users and stats on mount
+    // Fetch user stats on mount
     useEffect(() => {
-        fetchUsers(
-            1,
-            filters.role !== 'all' ? filters.role : undefined,
-            filters.status !== 'all' ? filters.status : undefined,
-            filters.search || undefined
-        );
         fetchStats();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Fetch users when role or status filters change
-    useEffect(() => {
-        fetchUsers(
-            1,
-            filters.role !== 'all' ? filters.role : undefined,
-            filters.status !== 'all' ? filters.status : undefined,
-            filters.search || undefined
-        );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filters.role, filters.status]);
-
-    // Debounced search
+    // Consolidate fetchUsers effects (Initial, Search, and Filters)
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             fetchUsers(
@@ -196,7 +181,7 @@ const UsersPage: React.FC = () => {
             );
         }, 500);
         return () => clearTimeout(timeoutId);
-    }, [filters.search]);
+    }, [filters.search, filters.role, filters.status]);
 
     const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
         setPagination(prev => ({ ...prev, current: page }));
@@ -263,6 +248,16 @@ const UsersPage: React.FC = () => {
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
+        setSelectedUser(null);
+    };
+
+    const handleOpenViewDetails = () => {
+        setViewDialogOpen(true);
+        setAnchorEl(null);
+    };
+
+    const handleCloseViewDetails = () => {
+        setViewDialogOpen(false);
         setSelectedUser(null);
     };
 
@@ -577,6 +572,12 @@ const UsersPage: React.FC = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
             >
+                <MenuItem onClick={handleOpenViewDetails}>
+                    <ListItemIcon>
+                        <Visibility sx={{ fontSize: '1.2rem' }} />
+                    </ListItemIcon>
+                    <ListItemText>View Details</ListItemText>
+                </MenuItem>
                 <MenuItem onClick={() => handleOpenDialog('edit', selectedUser)}>
                     <ListItemIcon>
                         <EditIcon fontSize="small" />
@@ -604,6 +605,114 @@ const UsersPage: React.FC = () => {
                     <ListItemText>Delete User</ListItemText>
                 </MenuItem>
             </Menu>
+
+            {/* View User Details Dialog */}
+            <Dialog
+                open={viewDialogOpen}
+                onClose={handleCloseViewDetails}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                    sx: { borderRadius: 2 }
+                }}
+            >
+                <DialogTitle sx={{ borderBottom: 1, borderColor: 'divider', pb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Visibility color="primary" />
+                    User Details
+                </DialogTitle>
+                <DialogContent sx={{ mt: 2 }}>
+                    {selectedUser && (
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <Avatar sx={{ width: 64, height: 64, bgcolor: 'primary.main', mr: 2, fontSize: '2rem' }}>
+                                    {getRoleIcon(selectedUser.role)}
+                                </Avatar>
+                                <Box>
+                                    <Typography variant="h5" fontWeight="bold">
+                                        {selectedUser.firstName} {selectedUser.lastName}
+                                    </Typography>
+                                    <Chip
+                                        label={selectedUser.role?.replace('_', ' ').toUpperCase()}
+                                        color={getRoleColor(selectedUser.role) as any}
+                                        size="small"
+                                        sx={{ mt: 0.5 }}
+                                    />
+                                </Box>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Typography variant="caption" color="text.secondary">Email Address</Typography>
+                                <Typography variant="body1" fontWeight="500">{selectedUser.email}</Typography>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Typography variant="caption" color="text.secondary">Account Status</Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                                    <Chip
+                                        label={getStatusLabel(selectedUser)}
+                                        color={getStatusColor(selectedUser) as any}
+                                        size="small"
+                                    />
+                                    <Typography variant="body2" color="text.secondary">
+                                        ({selectedUser.isActive ? 'Active' : 'Inactive'})
+                                    </Typography>
+                                </Box>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Typography variant="caption" color="text.secondary">Assigned Facility</Typography>
+                                <Typography variant="body1" fontWeight="500">
+                                    {selectedUser.hospitalId?.name || selectedUser.clinicId?.name || 'Not Assigned'}
+                                </Typography>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Typography variant="caption" color="text.secondary">Member Since</Typography>
+                                <Typography variant="body1" fontWeight="500">
+                                    {formatDateTime(selectedUser.createdAt)}
+                                </Typography>
+                            </Grid>
+
+                            {selectedUser.phone && (
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="caption" color="text.secondary">Phone Number</Typography>
+                                    <Typography variant="body1" fontWeight="500">{selectedUser.phone}</Typography>
+                                </Grid>
+                            )}
+
+                            {selectedUser.specialization && (
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="caption" color="text.secondary">Specialization</Typography>
+                                    <Typography variant="body1" fontWeight="500">{selectedUser.specialization}</Typography>
+                                </Grid>
+                            )}
+
+                            <Grid item xs={12}>
+                                <Divider />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Typography variant="caption" color="text.secondary">Internal User ID</Typography>
+                                <Typography variant="body2" sx={{ fontFamily: 'monospace', bgcolor: 'grey.100', p: 1, borderRadius: 1 }}>
+                                    {selectedUser._id}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    )}
+                </DialogContent>
+                <DialogActions sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
+                    <Button onClick={handleCloseViewDetails} variant="outlined">Close</Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => {
+                            handleCloseViewDetails();
+                            handleOpenDialog('edit', selectedUser);
+                        }}
+                    >
+                        Edit User
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
             {/* Add/Edit Dialog */}
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
