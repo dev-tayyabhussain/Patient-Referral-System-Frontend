@@ -180,7 +180,7 @@ const StepperRegisterPage: React.FC = () => {
                 city: '',
                 state: '',
                 zipCode: '',
-                country: 'USA',
+                country: 'UK',
             },
             clinicPhone: '',
             clinicEmail: '',

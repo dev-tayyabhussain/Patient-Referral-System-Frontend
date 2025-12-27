@@ -80,7 +80,7 @@ const DoctorsTab: React.FC<DoctorsTabProps> = ({ hospitalId }) => {
             city: '',
             state: '',
             zipCode: '',
-            country: 'USA'
+            country: 'UK'
         },
         practiceType: 'hospital',
         hospitalId: hospitalId || user?.hospitalId || '',
@@ -90,7 +90,7 @@ const DoctorsTab: React.FC<DoctorsTabProps> = ({ hospitalId }) => {
             city: '',
             state: '',
             zipCode: '',
-            country: 'USA'
+            country: 'UK'
         },
         clinicPhone: '',
         clinicEmail: '',
@@ -288,7 +288,7 @@ const DoctorsTab: React.FC<DoctorsTabProps> = ({ hospitalId }) => {
                 city: '',
                 state: '',
                 zipCode: '',
-                country: 'USA'
+                country: 'UK'
             },
             practiceType: doctor.practiceType || 'hospital',
             hospitalId: typeof doctor.hospitalId === 'object' ? doctor.hospitalId._id : (doctor.hospitalId || hospitalId || user?.hospitalId || ''),
@@ -298,7 +298,7 @@ const DoctorsTab: React.FC<DoctorsTabProps> = ({ hospitalId }) => {
                 city: '',
                 state: '',
                 zipCode: '',
-                country: 'USA'
+                country: 'UK'
             },
             clinicPhone: typeof doctor.clinicId === 'object' ? doctor.clinicId.phone : '',
             clinicEmail: typeof doctor.clinicId === 'object' ? doctor.clinicId.email : '',
@@ -428,7 +428,7 @@ const DoctorsTab: React.FC<DoctorsTabProps> = ({ hospitalId }) => {
                 city: '',
                 state: '',
                 zipCode: '',
-                country: 'USA'
+                country: 'UK'
             },
             practiceType: 'hospital',
             hospitalId: hospitalId || user?.hospitalId || '',
@@ -438,7 +438,7 @@ const DoctorsTab: React.FC<DoctorsTabProps> = ({ hospitalId }) => {
                 city: '',
                 state: '',
                 zipCode: '',
-                country: 'USA'
+                country: 'UK'
             },
             clinicPhone: '',
             clinicEmail: '',

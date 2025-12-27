@@ -243,7 +243,7 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                                     fullWidth
                                     label="Country"
                                     required
-                                    defaultValue="USA"
+                                    defaultValue="UK"
                                     error={!!errors.hospitalCountry}
                                     helperText={errors.hospitalCountry?.message}
                                 />

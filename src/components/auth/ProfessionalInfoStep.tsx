@@ -197,7 +197,7 @@ const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
                                                 required
                                                 error={!!errors.clinicAddress?.country}
                                                 helperText={errors.clinicAddress?.country?.message}
-                                                defaultValue="USA"
+                                                defaultValue="UK"
                                             />
                                         )}
                                     />

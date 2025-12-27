@@ -79,7 +79,7 @@ const HospitalsPage: React.FC = () => {
             city: '',
             state: '',
             zipCode: '',
-            country: 'USA',
+            country: 'UK',
         },
         capacity: {
             beds: 0,
@@ -193,7 +193,7 @@ const HospitalsPage: React.FC = () => {
                 city: hospital.address?.city || '',
                 state: hospital.address?.state || '',
                 zipCode: hospital.address?.zipCode || '',
-                country: hospital.address?.country || 'USA',
+                country: hospital.address?.country || 'UK',
             },
             capacity: {
                 beds: hospital.capacity?.beds || 0,
@@ -254,7 +254,7 @@ const HospitalsPage: React.FC = () => {
                 city: '',
                 state: '',
                 zipCode: '',
-                country: 'USA',
+                country: 'UK',
             },
             capacity: {
                 beds: 0,

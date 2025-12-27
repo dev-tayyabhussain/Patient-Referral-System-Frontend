@@ -87,7 +87,7 @@ const PatientsPage: React.FC = () => {
             city: '',
             state: '',
             zipCode: '',
-            country: 'USA'
+            country: 'UK'
         },
         hospitalId: user?.hospitalId || '',
         bloodType: '',
@@ -192,7 +192,7 @@ const PatientsPage: React.FC = () => {
                 city: '',
                 state: '',
                 zipCode: '',
-                country: 'USA'
+                country: 'UK'
             },
             hospitalId: user?.hospitalId || '',
             bloodType: '',

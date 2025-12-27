@@ -79,7 +79,7 @@ const PatientsTab: React.FC<PatientsTabProps> = ({ hospitalId }) => {
             city: '',
             state: '',
             zipCode: '',
-            country: 'USA'
+            country: 'UK'
         },
         hospitalId: hospitalId || user?.hospitalId || '',
         bloodType: '',
@@ -251,7 +251,7 @@ const PatientsTab: React.FC<PatientsTabProps> = ({ hospitalId }) => {
                 city: '',
                 state: '',
                 zipCode: '',
-                country: 'USA'
+                country: 'UK'
             },
             hospitalId: typeof patient.hospitalId === 'object' ? patient.hospitalId._id : (patient.hospitalId || hospitalId || user?.hospitalId || ''),
             bloodType: patient.bloodType || '',
@@ -365,7 +365,7 @@ const PatientsTab: React.FC<PatientsTabProps> = ({ hospitalId }) => {
                 city: '',
                 state: '',
                 zipCode: '',
-                country: 'USA'
+                country: 'UK'
             },
             hospitalId: hospitalId || user?.hospitalId || '',
             bloodType: '',

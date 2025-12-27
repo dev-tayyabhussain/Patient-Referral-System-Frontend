@@ -89,7 +89,7 @@ const DoctorsPage: React.FC = () => {
             city: '',
             state: '',
             zipCode: '',
-            country: 'USA'
+            country: 'UK'
         },
         practiceType: 'hospital',
         hospitalId: '',
@@ -99,7 +99,7 @@ const DoctorsPage: React.FC = () => {
             city: '',
             state: '',
             zipCode: '',
-            country: 'USA'
+            country: 'UK'
         },
         clinicPhone: '',
         clinicEmail: '',
@@ -259,7 +259,7 @@ const DoctorsPage: React.FC = () => {
                     city: '',
                     state: '',
                     zipCode: '',
-                    country: 'USA'
+                    country: 'UK'
                 },
                 practiceType: user?.role === 'hospital' ? 'hospital' : 'hospital',
                 hospitalId: user?.hospitalId || '',
@@ -269,7 +269,7 @@ const DoctorsPage: React.FC = () => {
                     city: '',
                     state: '',
                     zipCode: '',
-                    country: 'USA'
+                    country: 'UK'
                 },
                 clinicPhone: '',
                 clinicEmail: '',
